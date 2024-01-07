@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Ryan.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Ryan.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.ryanshang.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文转载自知乎@大笑，原文链接：https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;55887740 先来几个专业词汇，这样显得高大上一点（不存在的&#x3D;。&#x3D;）  BDD: Behavior-Driven Development (行为驱动开发)TDD: Test-Driven Development (测试驱动开发)ATDD: Acceptance Test Driven">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端与单元测试">
+<meta property="og:url" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/index.html">
+<meta property="og:site_name" content="Ryan Shang">
+<meta property="og:description" content="本文转载自知乎@大笑，原文链接：https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;55887740 先来几个专业词汇，这样显得高大上一点（不存在的&#x3D;。&#x3D;）  BDD: Behavior-Driven Development (行为驱动开发)TDD: Test-Driven Development (测试驱动开发)ATDD: Acceptance Test Driven">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/01.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/02.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/03.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/04.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-4738a87df3e2124f27d6c124a53592df_hd.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/05.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/06.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/07.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/08.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/09.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/10.png">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/11.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/12.png">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/13.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/14.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/15.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/16.png">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/17.jpg">
+<meta property="og:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/18.jpg">
+<meta property="article:published_time" content="2019-01-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2019-04-15T00:14:46.024Z">
+<meta property="article:author" content="Ryan Shang">
+<meta property="article:tag" content="转载">
+<meta property="article:tag" content="单元测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/01.jpg">
+
+<link rel="canonical" href="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>前端与单元测试 | Ryan Shang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ryan Shang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">生死看淡，不服就干</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          前端与单元测试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-01 00:00:00" itemprop="dateCreated datePublished" datetime="2019-02-01T00:00:00+08:00">2019-02-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>本文转载自知乎@大笑，原文链接：</strong><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/55887740">https://zhuanlan.zhihu.com/p/55887740</a></p>
+<p>先来几个专业词汇，这样显得高大上一点（不存在的&#x3D;。&#x3D;）</p>
+<blockquote>
+<p><strong>BDD</strong>: Behavior-Driven Development (行为驱动开发)<br><strong>TDD</strong>: Test-Driven Development (测试驱动开发)<br><strong>ATDD</strong>: Acceptance Test Driven Development(验收测试驱动开发)</p>
+</blockquote>
+<p>好，说完了，然后我们废话不多说，直接进入正题。我会从多个测试框架入手，结合各种<strong>断言库</strong>，用代码方式说明。</p>
+<hr>
+<p><strong>单元测试（Unit Testing）</strong>，是指对软件中的最小可测试单元进行检查和验证。</p>
+<p>当今所有著名的框架都要进行单元测试，经过测试的框架，它的信任度显然高于未测试的框架。</p>
+<p>这里，我们介绍一下<strong>karma</strong>这个前端的单元测试框架。</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/01.jpg" alt="img"></p>
+<p>Spectacular Test Runner for Javascript<a target="_blank" rel="noopener" href="http://karma-runner.github.io/3.0/index.html">http://karma-runner.github.io/3.0/index.html</a></p>
+<p>首先我们来安装一波：<br>新建一个<strong>空</strong>文件夹，然后在空文件夹中<strong>打开终端</strong>输入</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm init -y</span><br><span class="line">(sudo) npm install karma-cli -g</span><br><span class="line">npm install karma karma-jasmine karma-chrome-launcher jasmine-core --save-dev</span><br><span class="line">npm install karma-phantomjs-launcher --save-dev</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/02.jpg" alt="img"></p>
+<p>你安装karma-cli这个倒是说得过去，可是这个<strong>jasmine</strong>是啥，这个<strong>chrome-launcher</strong>和<strong>phantomjs-launcher</strong>又是啥？</p>
+<p>没错，单说测试框架是不完整的，必须要有断言库与之相配合，这里的<strong>jasmine</strong>就是断言库。</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/03.jpg" alt="img"></p>
+<p>啥是<strong>断言（assert）</strong>？</p>
+<p>根据概念：</p>
+<blockquote>
+<p>断言是编程术语，表示为一些布尔表达式，程序员相信在程序中的某个特定点该表达式值为真，可以在任何时候启用和禁用断言验证，因此可以在测试时启用断言而在部署时禁用断言。</p>
+</blockquote>
+<p>一言以蔽之，<strong>老子&#x2F;老娘说啥就是啥！</strong>听起来好像挺霸道的。那么具体呢？</p>
+<p>顺着<strong>karma</strong>的正常流程向下走，我们来写一个简单的单元测试。在终端输入：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">karma init</span><br></pre></td></tr></table></figure>
+
+
+
+<p>你会发现，需要做一个调查问卷了，问题如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&gt; 请问你要用哪种测试框架呢？</span><br><span class="line">&gt; 按tab键选择，按回车键进入下一个问题。</span><br><span class="line">&gt; jasmine </span><br><span class="line">(因为我们安装的是jasmine，选什么断言库都别忘了安装一下)</span><br><span class="line"></span><br><span class="line">&gt; 您想要使用Require.js么？  </span><br><span class="line">&gt; 选择yes的话，会安装Require.js插件。</span><br><span class="line">&gt; 按tab键选择，按回车键进入下一个问题。  </span><br><span class="line">&gt; no </span><br><span class="line">(这里我们选择no)</span><br><span class="line"></span><br><span class="line">&gt; 你想要在什么浏览器中测试呢？  </span><br><span class="line">&gt; 按tab键选择，输入空字符串进入下一个问题。  </span><br><span class="line">&gt; Chrome</span><br><span class="line">&gt; PhantomJS</span><br><span class="line">&gt;</span><br><span class="line"></span><br><span class="line">注：上面的选择这两个浏览器的原因是我们之前安装了这两个浏览器的启动器（launcher）</span><br><span class="line"></span><br><span class="line">&gt; 需要测试的源文件和测试命令文件放在哪呢？</span><br><span class="line">你可以使用通配符(glob patterns)来匹配文件，比如：&quot;js/*.js&quot; 或 &quot;test/**/*Spec.js&quot;</span><br><span class="line">输入空字符串进入下一个问题。 </span><br><span class="line">&gt;</span><br><span class="line">(这里先留空，可根据测试情况灵活配置)</span><br><span class="line"></span><br><span class="line">&gt;在符合匹配的文件中有哪些文件可以排除在外呢？</span><br><span class="line">你可以使用通配符来匹配文件，比如：&quot;**/*.swp&quot;</span><br><span class="line">输入空字符串进入下一个问题。 </span><br><span class="line">&gt; </span><br><span class="line"></span><br><span class="line">&gt; 你想要Karma根据文件的变化立即做出响应么？</span><br><span class="line">&gt; yes</span><br></pre></td></tr></table></figure>
+
+<p>之后，你就会发现你的文件夹里多了一个文件：</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/04.png" alt="img"></p>
+<p>打开这个文件，你会发现里面是一个配置项函数：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">module.exports = function(config) &#123;</span><br><span class="line">    basePath: &#x27;&#x27;, // 根路径将会同files和excluede项中的相对路径相关联</span><br><span class="line">    frameworks: [&#x27;jasmine&#x27;], // 所使用的测试框架</span><br><span class="line">    files: [], // 这里是需要测试的文件列表，有多种配置方式</span><br><span class="line">    exclude: [], // 测试过程中排除在外的文件列表</span><br><span class="line">    reporters: [&#x27;progress&#x27;], // 测试结果的汇报方式，</span><br><span class="line">    port: 9876, // web服务器接口</span><br><span class="line">    colors: true, // 是否使用彩色报告</span><br><span class="line">    logLevel: config.LOG_INFO, // 日志级别，可配置的值有: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG</span><br><span class="line">    autoWatch: true, // 是否自动观测文档改变并执行测试命令</span><br><span class="line">    browsers: [&quot;Chrome&quot;, &quot;PhantomJS&quot;], // 用哪些浏览器测试呢</span><br><span class="line">    singleRun: false, // 持续集成模式，如果设置成true，Karma将自行捕获浏览器，运行测试并根据结果退出,</span><br><span class="line">    concurrency: Infinity // 并发数，同时跑多少个浏览器进行测试，默认无上限</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>默认会生成的配置项就是上面这些，更完整的配置请<a href="https://link.zhihu.com/?target=http://karma-runner.github.io/3.0/config/configuration-file.html">点我</a><br>这里稍微提一下browsers配置项，它可以配置高达8种浏览器：</p>
+<p><img src="https://pic4.zhimg.com/80/v2-4738a87df3e2124f27d6c124a53592df_hd.jpg" alt="img"></p>
+<p>每一种都需要安装对应的<strong>launcher</strong>。其中有两个需要注意<strong>chromeHeadless</strong>和<strong>PhantomJS</strong>。这两个是无头浏览器。<em>所谓无头浏览器就是没有脑袋的浏览器</em>。</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/05.jpg" alt="img"></p>
+<blockquote>
+<p>无头浏览器即headless browser，是一种没有界面的浏览器。既然是浏览器那么浏览器该有的东西它都应该有，只是看不到界面而已。因此这种浏览器没有渲染UI的过程，用于测试时的速度很快。</p>
+</blockquote>
+<p>这就回答了上文launcher是啥的问题。毕竟，没有浏览器靠脑补可没法测试啊（真实）</p>
+<p>言归正传。我们回到karma测试本身。接下来，我们修改一下配置：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">files: [&quot;src/srcTest/**/*.js&quot;, &quot;test/unit/**/*.js&quot;]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>注意，上述写法只是配置写法中的一种, 配置的文件位置也是随您自己指定，更详细的配置请<a href="https://link.zhihu.com/?target=http://karma-runner.github.io/3.0/config/files.html">点我</a></p>
+<p>采用上文写法的话，我们在files数组里面配置的第一项是<strong>需要测试的文件</strong>，第二项就是<strong>用什么方法去测试它的文件</strong>。</p>
+<p>因此，我们也在文件里创建对应的文件夹：</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/06.jpg" alt="img"></p>
+<p>这里有一个要注意的点。我们的需要测试的文件和测试驱动文件的名字是<strong>一一对应的</strong>，区别就在于测试驱动文件的名字后要加上**.spec**</p>
+<p>那么我们就在srcTest的文件里面写点什么吧….</p>
+<p><strong>newBee.js</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 减法函数</span><br><span class="line">function minus(x) &#123;</span><br><span class="line">    return function(y) &#123;</span><br><span class="line">        return x - y;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>testKarma.js</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// 加法函数</span><br><span class="line">function add(x) &#123;</span><br><span class="line">    return function(y) &#123;</span><br><span class="line">        return x + y;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 乘法函数</span><br><span class="line">function multi(x) &#123;</span><br><span class="line">    return function(y) &#123;</span><br><span class="line">        return x * y;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//if函数测试</span><br><span class="line">function ifTest(boolean) &#123;</span><br><span class="line">    if (boolean) &#123;</span><br><span class="line">        return &quot;热热&quot;;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return &quot;凉凉&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 反转字符串</span><br><span class="line">function reverseStr (string) &#123;</span><br><span class="line">    return string.split(&quot;&quot;).reverse().join(&quot;&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/07.jpg" alt="img"></p>
+<p>那么接下来，就在.spec文件里写入对应的<strong>测试断言</strong>。我滴个龟龟，终于说到断言了。</p>
+<p>因为我们这里使用的是Jasmine，因此就先放一下它的官网。</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/08.jpg" alt="img"></p>
+<p>jasmine.github.io<a target="_blank" rel="noopener" href="https://jasmine.github.io/api/edge/global">https://jasmine.github.io/api/edge/global</a></p>
+<p>我们结合实例来说文档</p>
+<p><strong>newBee.spec.js</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">describe(&quot;newBee单元测试&quot;, function() &#123;</span><br><span class="line">    it(&quot;减法函数测试&quot;, function() &#123;</span><br><span class="line">        var minus7 = minus(7);</span><br><span class="line">        expect(minus7(6)).toBe(0);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>testKarma.spec.js</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">describe(&quot;testKarma单元测试&quot;, function() &#123;</span><br><span class="line"></span><br><span class="line">    it(&quot;如果函数测试&quot;, function() &#123;</span><br><span class="line">        expect(ifTest(true)).toBe(true);</span><br><span class="line">        expect(ifTest(false)).toBe(&quot;凉凉&quot;);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    it(&quot;回文函数测试&quot;, function() &#123;</span><br><span class="line">        expect(reverseStr(&#x27;abc&#x27;)).toEqual(&#x27;cba&#x27;);</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>基本的格式就是这样的，下面来解释一下</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">// 分组describe(), 这个是可以嵌套的，并且每个单独的测试都有beforeAll, afterAll, beforeEach和afterEach</span><br><span class="line">describe(&quot;这里写测试群组的名称&quot;, function()&#123;</span><br><span class="line">    // 具体的测试，it(), 当其中所有的断言都为true时，则通过；否则失效。</span><br><span class="line">    it(&#x27;这里写具体测试的名称&#x27;, function()&#123;</span><br><span class="line">        var a = true;</span><br><span class="line">        // 期望, expect()。 匹配，to*()</span><br><span class="line">        // 每个匹配方法在期望值和实际值之间执行逻辑比较</span><br><span class="line">        // 它负责告诉jasmine断言的真假，从而决定测试的成功或失败</span><br><span class="line">        // 木有错，老子/老娘说啥就是啥</span><br><span class="line">        expect(a).toBe(true); // 这是肯定断言</span><br><span class="line">        expect(!a).not.toBe(true); // 这是否定断言</span><br><span class="line"></span><br><span class="line">        // jasmine内置的匹配方法有很多，亦可自定义匹配方法</span><br><span class="line">        // toBe()</span><br><span class="line">        // toEqual()</span><br><span class="line">        // toMatch()</span><br><span class="line">        // toBeUndefined()</span><br><span class="line">        // toBeNull()</span><br><span class="line">        // toBeTruthy()</span><br><span class="line">        // toContain()</span><br><span class="line">        // toBeLessThan()</span><br><span class="line">        // toBeCloseTo()</span><br><span class="line">        // toThrowError()</span><br><span class="line">        // 等等等等</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>那么，测试方法写完了，我们来实际运行一下测试吧。打开终端，输入：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">karma start</span><br></pre></td></tr></table></figure>
+
+
+
+<p>就会在终端看到</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/09.jpg" alt="img"></p>
+<p>可以看到，我们的测试在Chrome和PhantomJS浏览器中分别测试了的5个方法，都有2个没有通过测试，没错，我们当初在写测试的时候<strong>故意</strong>写错了（这是真的）。</p>
+<p>那么我们把测试修改成真值。</p>
+<p><strong>newBee.spec.js</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">describe(&quot;newBee单元测试&quot;, function() &#123;</span><br><span class="line">    it(&quot;减法函数测试&quot;, function() &#123;</span><br><span class="line">        var minus7 = minus(7);</span><br><span class="line">        expect(minus7(6)).toBe(1);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>testKarma.spec.js</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">it(&quot;如果函数测试&quot;, function() &#123;</span><br><span class="line">    expect(ifTest(true)).toBe(&quot;热热&quot;);</span><br><span class="line">    expect(ifTest(false)).toBe(&quot;凉凉&quot;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>结果是：</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/10.png" alt="img"></p>
+<p>全部SUCCESS, 撒花。</p>
+<p>到这里，一个基本的测试流程就走完了。然而，这并非终点。</p>
+<p>其实，还能更进一步的。我们打开终端：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install karma-coverage --save-dev</span><br></pre></td></tr></table></figure>
+
+
+
+<p>然后打开karma.conf.js, 添加一些配置项</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 这里配置哪些文件需要统计测试覆盖率，例如，如果你的所有代码文件都在src文件夹中，你就需要如下配置</span><br><span class="line">preprocessors: &#123;</span><br><span class="line">    &quot;src/srcTest/*.js&quot;: &quot;coverage&quot;</span><br><span class="line">&#125;,</span><br><span class="line">// 新增coverageReporter选项</span><br><span class="line">// 配置覆盖率报告的查看方式，type查看类型，可以取值html、text等等，dir输出目录</span><br><span class="line">coverageReporter: &#123;</span><br><span class="line">    dir: &quot;docs/unit&quot;,</span><br><span class="line">    reporters: [</span><br><span class="line">        &#123;</span><br><span class="line">            type: &quot;html&quot;,</span><br><span class="line">            subdir: &quot;report-html&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;,</span><br><span class="line">reporters: [&#x27;progress&#x27;, &quot;coverage&quot;] // 没错，reporters里面新增了一个coverage</span><br></pre></td></tr></table></figure>
+
+
+
+<p>然后保存，再运行一次karma start</p>
+<p>接着会发现你的项目里多了一个文件夹</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/11.jpg" alt="img"></p>
+<p>用浏览器打开index.html。就会看到</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/12.png" alt="img"></p>
+<p>这就是你所写的js的测试覆盖率。</p>
+<p>这样看起来是不是高大上了一些呢？</p>
+<p>这里就有一个问题了。普通的js可以测试，可是我是写Vue的啊，Vue组件怎么测试呢？很简单，Vue官网有非常详细的<a href="https://link.zhihu.com/?target=https://cn.vuejs.org/v2/guide/unit-testing.html">测试教程</a>。甚至还有专用的<a href="https://link.zhihu.com/?target=https://vue-test-utils.vuejs.org/zh/">测试工具</a>和<a href="https://link.zhihu.com/?target=https://cn.vuejs.org/v2/cookbook/unit-testing-vue-components.html">测试说明</a></p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/13.jpg" alt="img"></p>
+<p>彳亍口巴，你说的这些个单元测试看起来花里胡哨的，实际作用是什么呢？</p>
+<p>单元测试的好处</p>
+<ol>
+<li>单元测试不但会使你的工作完成得更轻松。而且会令你的设计会变得更好，甚至大大减少你花在调试上面的时间。</li>
+<li>提高代码质量</li>
+<li>减少bug, 快速定位bug</li>
+<li>使修改和重构可以更放心</li>
+<li>显得专业</li>
+</ol>
+<p>单元测试的缺点</p>
+<blockquote>
+<p>开发人员要花费时间在写测试代码上，然而又不会给你加工资…<br>小项目写测试只能单纯的增加开发时间和成本，然而又不会给你加工资…<br>我写了测试除了懂测试的人能看懂，别人又不知道，然而还不会给你加工资…</p>
+</blockquote>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/14.jpg" alt="img"></p>
+<p>别别别，别打我…你先听我道(hu)理(jiao)讲(man)完(chan)。</p>
+<ol>
+<li>对于所编写的代码，你在调试上面画了多少时间？</li>
+<li>对于以前你自认为正确的代码，而实际上这些代码却存在重大的bug，你花了多少时间在重新确认这些代码上面？</li>
+<li>对于一个别人报告的bug，你花了多少时间才找出导致这个bug的源码位置？</li>
+</ol>
+<p>对于那些没有使用单元测试的程序员而言，上面这些问题所耗费的时间的是逐渐增加的，而且项目越深入，花费的时间越多；另一方面，适当的单元测试却可以很大程度地减少这些时间，从而为你腾出足够的时间来编写所有的单元测试——甚至可能还有剩余的空闲时间。</p>
+<h2 id="更加真实的是，主流的框架必须要写测试"><a href="#更加真实的是，主流的框架必须要写测试" class="headerlink" title="更加真实的是，主流的框架必须要写测试"></a>更加真实的是，主流的框架<strong>必须</strong>要写测试</h2><blockquote>
+<p>不想当程序员的设计师不是好运维。 —-鲁迅</p>
+</blockquote>
+<p>作为一个程序员，如果你想要让自己写的框架放到github和npm上能够为世界上的其他人所用。那么一个最基本的前提就是————代码没有BUG。可是，你的怎么向语言不通思维不同的人解释你的JavaScript库确实足够健壮呢。这个时候就需要单元测试出场了。</p>
+<p>主流前端框架虽然在所使用的测试库（karma、jest、QUnit）和断言库（assert、jasmine、 chai）上略有差别，但Vue、React、Angular、Underscore甚至是jQuery都写了单元测试。</p>
+<p>来个石锤</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/15.jpg" alt="img"></p>
+<p>下面我们看一看Vue的测试是怎么写的：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/vuejs/vue.git</span><br><span class="line">npm install</span><br><span class="line">npm run test unit // 这里可以看到单元测试</span><br><span class="line">npm run test // 这里就看全部的测试</span><br></pre></td></tr></table></figure>
+
+
+
+<p>Vue的测试覆盖率为</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/16.png" alt="img"></p>
+<p>举例：v-show的测试</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">// import Vue from &#x27;vue&#x27;</span><br><span class="line"></span><br><span class="line">describe(&#x27;Directive v-show&#x27;, () =&gt; &#123;</span><br><span class="line">  it(&#x27;should check show value is truthy&#x27;, () =&gt; &#123;</span><br><span class="line">    const vm = new Vue(&#123;</span><br><span class="line">      template: &#x27;&lt;div&gt;&lt;span v-show=&quot;foo&quot;&gt;hello&lt;/span&gt;&lt;/div&gt;&#x27;,</span><br><span class="line">      data: &#123; foo: true &#125;</span><br><span class="line">    &#125;).$mount()</span><br><span class="line">    expect(vm.$el.firstChild.style.display).toBe(&#x27;&#x27;)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  it(&#x27;should check show value is falsy&#x27;, () =&gt; &#123;</span><br><span class="line">    const vm = new Vue(&#123;</span><br><span class="line">      template: &#x27;&lt;div&gt;&lt;span v-show=&quot;foo&quot;&gt;hello&lt;/span&gt;&lt;/div&gt;&#x27;,</span><br><span class="line">      data: &#123; foo: false &#125;</span><br><span class="line">    &#125;).$mount()</span><br><span class="line">    expect(vm.$el.firstChild.style.display).toBe(&#x27;none&#x27;)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  it(&#x27;should update show value changed&#x27;, done =&gt; &#123;</span><br><span class="line">    const vm = new Vue(&#123;</span><br><span class="line">      template: &#x27;&lt;div&gt;&lt;span v-show=&quot;foo&quot;&gt;hello&lt;/span&gt;&lt;/div&gt;&#x27;,</span><br><span class="line">      data: &#123; foo: true &#125;</span><br><span class="line">    &#125;).$mount()</span><br><span class="line">    expect(vm.$el.firstChild.style.display).toBe(&#x27;&#x27;)</span><br><span class="line">    vm.foo = false</span><br><span class="line">    waitForUpdate(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;none&#x27;)</span><br><span class="line">      vm.foo = &#123;&#125;</span><br><span class="line">    &#125;).then(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;&#x27;)</span><br><span class="line">      vm.foo = 0</span><br><span class="line">    &#125;).then(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;none&#x27;)</span><br><span class="line">      vm.foo = []</span><br><span class="line">    &#125;).then(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;&#x27;)</span><br><span class="line">      vm.foo = null</span><br><span class="line">    &#125;).then(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;none&#x27;)</span><br><span class="line">      vm.foo = &#x27;0&#x27;</span><br><span class="line">    &#125;).then(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;&#x27;)</span><br><span class="line">      vm.foo = undefined</span><br><span class="line">    &#125;).then(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;none&#x27;)</span><br><span class="line">      vm.foo = 1</span><br><span class="line">    &#125;).then(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;&#x27;)</span><br><span class="line">    &#125;).then(done)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  it(&#x27;should respect display value in style attribute&#x27;, done =&gt; &#123;</span><br><span class="line">    const vm = new Vue(&#123;</span><br><span class="line">      template: &#x27;&lt;div&gt;&lt;span v-show=&quot;foo&quot; style=&quot;display:block&quot;&gt;hello&lt;/span&gt;&lt;/div&gt;&#x27;,</span><br><span class="line">      data: &#123; foo: true &#125;</span><br><span class="line">    &#125;).$mount()</span><br><span class="line">    expect(vm.$el.firstChild.style.display).toBe(&#x27;block&#x27;)</span><br><span class="line">    vm.foo = false</span><br><span class="line">    waitForUpdate(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;none&#x27;)</span><br><span class="line">      vm.foo = true</span><br><span class="line">    &#125;).then(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;block&#x27;)</span><br><span class="line">    &#125;).then(done)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  it(&#x27;should support unbind when reused&#x27;, done =&gt; &#123;</span><br><span class="line">    const vm = new Vue(&#123;</span><br><span class="line">      template:</span><br><span class="line">        &#x27;&lt;div v-if=&quot;tester&quot;&gt;&lt;span v-show=&quot;false&quot;&gt;&lt;/span&gt;&lt;/div&gt;&#x27; +</span><br><span class="line">        &#x27;&lt;div v-else&gt;&lt;span @click=&quot;tester=!tester&quot;&gt;show&lt;/span&gt;&lt;/div&gt;&#x27;,</span><br><span class="line">      data: &#123; tester: true &#125;</span><br><span class="line">    &#125;).$mount()</span><br><span class="line">    expect(vm.$el.firstChild.style.display).toBe(&#x27;none&#x27;)</span><br><span class="line">    vm.tester = false</span><br><span class="line">    waitForUpdate(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;&#x27;)</span><br><span class="line">      vm.tester = true</span><br><span class="line">    &#125;).then(() =&gt; &#123;</span><br><span class="line">      expect(vm.$el.firstChild.style.display).toBe(&#x27;none&#x27;)</span><br><span class="line">    &#125;).then(done)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>只要你的测试覆盖率足够高，你就可以在著名的GitHub装逼网站<a href="https://link.zhihu.com/?target=https://codecov.io/">Codecov</a>搞一个覆盖率标签了。就像下面这个：</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/17.jpg" alt="img"></p>
+<p>怎么样，这样你所写的框架，是不是就逼格满满？</p>
+<p><img src="/2019/02/01/%E5%89%8D%E7%AB%AF%E4%B8%8E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/18.jpg" alt="img"></p>
+<p>所以你还在等什么，测不了吃亏，测不了上当，赶紧在自己的代码中加入测试吧，<del>只要998</del>，代码逼格带回家！</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
+              <a href="/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" rel="tag"># 单元测试</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/01/12/%E5%B0%81%E8%A3%85%E4%B8%80%E4%B8%AA%E6%B5%8F%E8%A7%88%E5%99%A8%E6%96%87%E6%9C%AC%E5%A4%8D%E5%88%B6%E5%8A%9F%E8%83%BD%E7%9A%84%E6%96%B9%E6%B3%95/" rel="prev" title="封装一个浏览器文本复制功能的方法">
+      <i class="fa fa-chevron-left"></i> 封装一个浏览器文本复制功能的方法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/16/%E4%B8%80%E4%B8%AA%E5%AE%9E%E7%8E%B0%E4%B8%8D%E6%B8%85%E7%A9%BAVuex-Store%E7%9A%84%E5%88%B7%E6%96%B0%E9%A1%B5%E9%9D%A2%E6%96%B9%E5%BC%8F/" rel="next" title="一个实现不清空Vuex Store的刷新页面方式">
+      一个实现不清空Vuex Store的刷新页面方式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E5%8A%A0%E7%9C%9F%E5%AE%9E%E7%9A%84%E6%98%AF%EF%BC%8C%E4%B8%BB%E6%B5%81%E7%9A%84%E6%A1%86%E6%9E%B6%E5%BF%85%E9%A1%BB%E8%A6%81%E5%86%99%E6%B5%8B%E8%AF%95"><span class="nav-number">1.</span> <span class="nav-text">更加真实的是，主流的框架必须要写测试</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryan Shang"
+      src="/images/Ryan.jpg">
+  <p class="site-author-name" itemprop="name">Ryan Shang</p>
+  <div class="site-description" itemprop="description">前端渣渣一枚，热爱科技，热爱搞事请</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:Ryan.Shang@outlook.com" title="E-Mail → mailto:Ryan.Shang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryan Shang</span>
+    <span class="post-meta-divider">| </span><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备18027486号 </a>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

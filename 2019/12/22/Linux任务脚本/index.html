@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Ryan.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Ryan.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.ryanshang.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="这几周在研究安卓手机的Linux Deploy和FRP内网穿透，每次启动关闭重启都要手动执行一些命令，于是想到用shell脚本去控制，稍稍研究了下，写了几个脚本，这里做下记录，以Frpc进程为例，假设Frp编译后的文件夹路径为&#x2F;home&#x2F;user&#x2F;frp start.sh 1234567891011NAME&#x3D;frpcNAME_OUT&#x3D;&quot;$&amp;#123;NAME^&amp;#125;&quot;DI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux任务脚本">
+<meta property="og:url" content="https://www.ryanshang.com/2019/12/22/Linux%E4%BB%BB%E5%8A%A1%E8%84%9A%E6%9C%AC/index.html">
+<meta property="og:site_name" content="Ryan Shang">
+<meta property="og:description" content="这几周在研究安卓手机的Linux Deploy和FRP内网穿透，每次启动关闭重启都要手动执行一些命令，于是想到用shell脚本去控制，稍稍研究了下，写了几个脚本，这里做下记录，以Frpc进程为例，假设Frp编译后的文件夹路径为&#x2F;home&#x2F;user&#x2F;frp start.sh 1234567891011NAME&#x3D;frpcNAME_OUT&#x3D;&quot;$&amp;#123;NAME^&amp;#125;&quot;DI">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-02-08T10:34:21.089Z">
+<meta property="article:author" content="Ryan Shang">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="CentOS">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.ryanshang.com/2019/12/22/Linux%E4%BB%BB%E5%8A%A1%E8%84%9A%E6%9C%AC/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Linux任务脚本 | Ryan Shang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ryan Shang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">生死看淡，不服就干</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2019/12/22/Linux%E4%BB%BB%E5%8A%A1%E8%84%9A%E6%9C%AC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux任务脚本
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-22 00:00:00" itemprop="dateCreated datePublished" datetime="2019-12-22T00:00:00+08:00">2019-12-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这几周在研究安卓手机的Linux Deploy和FRP内网穿透，每次启动关闭重启都要手动执行一些命令，于是想到用shell脚本去控制，稍稍研究了下，写了几个脚本，这里做下记录，以Frpc进程为例，假设Frp编译后的文件夹路径为<code>/home/user/frp</code></p>
+<p>start.sh</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">NAME=frpc</span><br><span class="line">NAME_OUT=<span class="string">&quot;<span class="variable">$&#123;NAME^&#125;</span>&quot;</span></span><br><span class="line">DIR=/home/user/frp</span><br><span class="line">PID=$(ps -e | grep <span class="variable">$NAME</span> | awk &#123;<span class="string">&#x27;print $1&#x27;</span>&#125;)</span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$PID</span> == <span class="string">&quot;&quot;</span> ]]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">nohup</span> <span class="variable">$DIR</span>/<span class="variable">$NAME</span> -c <span class="variable">$DIR</span>/<span class="variable">$NAME</span>.ini &gt; <span class="variable">$DIR</span>/nohup.out 2&gt;&amp;1 &amp;</span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;Start <span class="variable">$NAME_OUT</span> Success&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$NAME_OUT</span> is already running!&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<p>stop.sh</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">NAME=frpc</span><br><span class="line">NAME_OUT=<span class="string">&quot;<span class="variable">$&#123;NAME^&#125;</span>&quot;</span></span><br><span class="line">DIR=/home/user/frp</span><br><span class="line">PID=$(ps -e | grep <span class="variable">$NAME</span> | awk &#123;<span class="string">&#x27;print $1&#x27;</span>&#125;)</span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$PID</span> == <span class="string">&quot;&quot;</span> ]]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$NAME_OUT</span> is not running!&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	sudo <span class="built_in">kill</span> -9 <span class="variable">$PID</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;Stop <span class="variable">$NAME_OUT</span> Success!&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<p>restart.sh</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">NAME=frpc</span><br><span class="line">NAME_OUT=<span class="string">&quot;<span class="variable">$&#123;NAME^&#125;</span>&quot;</span></span><br><span class="line">DIR=/home/user/frp</span><br><span class="line">PID=$(ps -e | grep <span class="variable">$NAME</span> | awk &#123;<span class="string">&#x27;print $1&#x27;</span>&#125;)</span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$PID</span> == <span class="string">&quot;&quot;</span> ]]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">nohup</span> <span class="variable">$DIR</span>/<span class="variable">$NAME</span> -c <span class="variable">$DIR</span>/<span class="variable">$NAME</span>.ini &gt; <span class="variable">$DIR</span>/nohup.out 2&gt;&amp;1 &amp;</span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;Start <span class="variable">$NAME_OUT</span> Success!&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	sudo <span class="built_in">kill</span> -9 <span class="variable">$PID</span></span><br><span class="line">	<span class="built_in">nohup</span> <span class="variable">$DIR</span>/<span class="variable">$NAME</span> -c <span class="variable">$DIR</span>/<span class="variable">$NAME</span>.ini &gt; <span class="variable">$DIR</span>/nohup.out 2&gt;&amp;1 &amp;</span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;Restart <span class="variable">$NAME_OUT</span> Success!&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<p>现在还有几个问题需要后面关注下：</p>
+<ol>
+<li>awk后面参数，如果是双引号，则会又问题，单引号和双引号应该是有区别的，需要关注下有区别的原因</li>
+<li>三个脚本其实包含大量重复内容，后面考虑合成一个脚本，利用参数方式区分执行命令</li>
+<li>需要了解下Linux中比较常见的几个服务管理工具，了解下原理，例如service command</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/CentOS/" rel="tag"># CentOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/15/%E4%B8%AA%E4%BA%BA%E7%94%B5%E8%84%91%E8%AE%BE%E5%A4%87%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E6%95%B4%E7%90%86/" rel="prev" title="个人电脑设备常用软件整理">
+      <i class="fa fa-chevron-left"></i> 个人电脑设备常用软件整理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/25/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E4%B8%AA%E4%BA%BAgit%E4%BA%8B%E6%95%85/" rel="next" title="记录一次个人git事故">
+      记录一次个人git事故 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryan Shang"
+      src="/images/Ryan.jpg">
+  <p class="site-author-name" itemprop="name">Ryan Shang</p>
+  <div class="site-description" itemprop="description">前端渣渣一枚，热爱科技，热爱搞事请</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:Ryan.Shang@outlook.com" title="E-Mail → mailto:Ryan.Shang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryan Shang</span>
+    <span class="post-meta-divider">| </span><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备18027486号 </a>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Ryan.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Ryan.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.ryanshang.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、背景最近想给自己的站点都加上HTTPS，以前使用certbot都是给每个域名单独申请证书，比较麻烦，这次升级成泛域名证书，所有同一级域名的站点都可以公用一个证书。刚好也趁此机会把站点的HTTP2.0和TLS1.3都配置上。 二、使用acme.sh申请泛域名证书1. 创建阿里云RAM角色泛域名证书的申请，需要配置特定的DNS来验证域名的归属。如果想实现自动化申请、续期，就需要使用DNS Api来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTPS泛域名证书升级并配置HTTP2和TLS1.3">
+<meta property="og:url" content="https://www.ryanshang.com/2023/12/23/HTTPS%E6%B3%9B%E5%9F%9F%E5%90%8D%E8%AF%81%E4%B9%A6%E5%8D%87%E7%BA%A7%E5%B9%B6%E9%85%8D%E7%BD%AEHTTP2%E5%92%8CTLS1-3/index.html">
+<meta property="og:site_name" content="Ryan Shang">
+<meta property="og:description" content="一、背景最近想给自己的站点都加上HTTPS，以前使用certbot都是给每个域名单独申请证书，比较麻烦，这次升级成泛域名证书，所有同一级域名的站点都可以公用一个证书。刚好也趁此机会把站点的HTTP2.0和TLS1.3都配置上。 二、使用acme.sh申请泛域名证书1. 创建阿里云RAM角色泛域名证书的申请，需要配置特定的DNS来验证域名的归属。如果想实现自动化申请、续期，就需要使用DNS Api来">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-01-07T01:54:11.242Z">
+<meta property="article:author" content="Ryan Shang">
+<meta property="article:tag" content="HTTPS">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.ryanshang.com/2023/12/23/HTTPS%E6%B3%9B%E5%9F%9F%E5%90%8D%E8%AF%81%E4%B9%A6%E5%8D%87%E7%BA%A7%E5%B9%B6%E9%85%8D%E7%BD%AEHTTP2%E5%92%8CTLS1-3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>HTTPS泛域名证书升级并配置HTTP2和TLS1.3 | Ryan Shang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ryan Shang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">生死看淡，不服就干</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2023/12/23/HTTPS%E6%B3%9B%E5%9F%9F%E5%90%8D%E8%AF%81%E4%B9%A6%E5%8D%87%E7%BA%A7%E5%B9%B6%E9%85%8D%E7%BD%AEHTTP2%E5%92%8CTLS1-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HTTPS泛域名证书升级并配置HTTP2和TLS1.3
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-23 00:00:00" itemprop="dateCreated datePublished" datetime="2023-12-23T00:00:00+08:00">2023-12-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>最近想给自己的站点都加上HTTPS，以前使用certbot都是给每个域名单独申请证书，比较麻烦，这次升级成泛域名证书，所有同一级域名的站点都可以公用一个证书。刚好也趁此机会把站点的HTTP2.0和TLS1.3都配置上。</p>
+<h3 id="二、使用acme-sh申请泛域名证书"><a href="#二、使用acme-sh申请泛域名证书" class="headerlink" title="二、使用acme.sh申请泛域名证书"></a>二、使用acme.sh申请泛域名证书</h3><h4 id="1-创建阿里云RAM角色"><a href="#1-创建阿里云RAM角色" class="headerlink" title="1. 创建阿里云RAM角色"></a>1. 创建阿里云RAM角色</h4><p>泛域名证书的申请，需要配置特定的DNS来验证域名的归属。如果想实现自动化申请、续期，就需要使用DNS Api来配合使用。</p>
+<p>acme.sh支持使用阿里云的DNS Api。</p>
+<p>进入阿里云控制台，选择云管理——访问控制（RAM访问控制）——身份管理——用户——创建用户</p>
+<p>创建成功后会获得这个用户的Key和Secret，需要记录下来，在申请证书时需要。</p>
+<p>创建的新用户需要赋予几个权限：</p>
+<ul>
+<li>管理云解析（DNS）的权限</li>
+<li>管理公共DNS（PubDNS）的权限</li>
+<li>管理HTTPDNS的权限</li>
+</ul>
+<p>配置好后，就可以继续申请证书的操作了。</p>
+<h4 id="2-安装acme-sh"><a href="#2-安装acme-sh" class="headerlink" title="2. 安装acme.sh"></a>2. 安装acme.sh</h4><p><strong>Note：</strong> 官方建议使用root用户安装，也可以使用其他用户，这里以root用户为例</p>
+<p>安装 acme.sh ，默认安装位置是 ~&#x2F;.acme.sh :</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https://get.acme.sh | sh</span><br></pre></td></tr></table></figure>
+
+<p>在这一步安装过程中，完成了3个任务：</p>
+<ol>
+<li><p>拷贝sh脚本到~&#x2F;.acme.sh&#x2F;</p>
+</li>
+<li><p>创建alias别名acme.sh&#x3D;~&#x2F;.acme.sh&#x2F;acme.sh</p>
+</li>
+<li><p>启动定时器，并加入到定时任务</p>
+</li>
+</ol>
+<h4 id="3-配置阿里云的DNS信息"><a href="#3-配置阿里云的DNS信息" class="headerlink" title="3. 配置阿里云的DNS信息"></a>3. 配置阿里云的DNS信息</h4><p>在终端输入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> Ali_Key=<span class="string">&quot;ali-key&quot;</span></span><br><span class="line"><span class="built_in">export</span> Ali_Secret=<span class="string">&quot;ali-secret&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>这个DNS API信息最终会保存在<code>~/.acme.sh/account.conf</code>文件中。</p>
+<h4 id="4-申请泛域名证书"><a href="#4-申请泛域名证书" class="headerlink" title="4. 申请泛域名证书"></a>4. 申请泛域名证书</h4><p>在终端输入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --issue --dns dns_ali -d xxx.com -d *.xxx.com --server letsencrypt</span><br></pre></td></tr></table></figure>
+
+<p><code>--dns dns_ali</code>是指使用的阿里云的DNS Api，不同云服务商不一致</p>
+<p><code>--server letsencrypt</code>是指使用letsencrypt申请证书，不携带参数默认使用的zerossl，我使用默认会报错，更换为letsencrypt可正常申请。</p>
+<p>证书申请成功后，默认保存在<code>~/.acme.sh/xxx.com</code>目录下。</p>
+<h4 id="5-安装证书到指定目录"><a href="#5-安装证书到指定目录" class="headerlink" title="5. 安装证书到指定目录"></a>5. 安装证书到指定目录</h4><p>默认生成的证书都放在安装目录下, 不建议直接通过nginx或apache使用此目录下的证书。正确的使用方法是使用 <code>--install-cert</code> 命令，并指定目标位置,，然后证书文件会被copy到相应的位置。</p>
+<p>在nginx的配置文件中创建一个目录用来保存证书，也可以保存在其他位置，看个人使用习惯。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/nginx</span><br><span class="line"><span class="built_in">mkdir</span> ca</span><br><span class="line"><span class="built_in">cd</span> ca</span><br><span class="line"><span class="built_in">mkdir</span> xxx.com</span><br></pre></td></tr></table></figure>
+
+<p>安装证书：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --install-cert -d xxx.com \</span><br><span class="line">--key-file /etc/nginx/ca/xxx.com/key.pem \</span><br><span class="line">--fullchain-file /etc/nginx/ca/xxx/cert.pem \</span><br><span class="line">--reloadcmd <span class="string">&quot;service nginx reload&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>上述命令把下发的证书复制到你指定的位置，这样避免你直接从<code>~/.acme.sh/</code>读取证书，然后重新加载nginx或apache以刷新证书。域名为必需参数，其它参数为可选。</p>
+<p>但要注意的是，reloadcmd参数非常重要（reloadcmd后面的参数为重新加载nginx或Apache的命令，可以根据系统的不同作相应修改），即使更新了证书，但是nginx或apache没有重新加载，证书是不是会刷新到服务中去的。</p>
+<h4 id="6-调整nginx配置"><a href="#6-调整nginx配置" class="headerlink" title="6. 调整nginx配置"></a>6. 调整nginx配置</h4><p>修改站点的nginx证书配置，例如：<code>/etc/nginx/conf.d/blog.conf</code>，把证书更换为刚申请的泛域名证书。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="attribute">listen</span> <span class="number">443</span> ssl;</span><br><span class="line">  <span class="attribute">server_name</span> blog.xxx;</span><br><span class="line">  <span class="attribute">charset</span> utf-<span class="number">8</span>;</span><br><span class="line">  <span class="section">location</span> / &#123;</span><br><span class="line">        <span class="attribute">root</span> /home/git/blog;</span><br><span class="line">        <span class="attribute">index</span> index.html;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">ssl_certificate</span> /etc/nginx/ca/xxx.com/cert.pem;</span><br><span class="line">  <span class="attribute">ssl_certificate_key</span> /etc/nginx/ca/xxx.com/key.pem;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先执行<code>nginx -t</code>，验证配置文件是否有问题，确认没有问题后执行<code>systemctl reload nginx</code>，更新nginx配置。这时候访问页面，查看证书信息就能确认证书是否成功生效。</p>
+<h4 id="三、配置HTTP2和TLS1-3"><a href="#三、配置HTTP2和TLS1-3" class="headerlink" title="三、配置HTTP2和TLS1.3"></a>三、配置HTTP2和TLS1.3</h4><p>站点的nginx配置全部更新后，就可以配置下HTTP2和TLS1.3了，这个操作比较简单。使用sed命令可以批量操作。</p>
+<p><strong>Note：</strong>此处修改最好提前备份下配置文件，防止操作异常导致站点访问异常。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">&#x27;s/listen 443 ssl;/listen 443 ssl;\</span></span><br><span class="line"><span class="string">  http2 on;/&#x27;</span> /etc/nginx/conf.d/*.conf <span class="comment"># 在listen 443 ssl；这一行的下面增加http2的配置</span></span><br><span class="line"></span><br><span class="line">sed -i <span class="string">&#x27;s/ssl_protocols TLSv1 TLSv1.1 TLSv1.2;/ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;&#x27;</span> /etc/nginx/conf.d/*.conf <span class="comment"># 把配置中的支持协议替换掉，顺便下线了TLS1</span></span><br></pre></td></tr></table></figure>
+
+<p>先执行<code>nginx -t</code>，验证配置文件是否有问题，确认没有问题后执行<code>systemctl reload nginx</code>，更新nginx配置。</p>
+<p>访问页面，可在开发者工具的network中查看h2配置是否成功，在security中查看是否开启了TLS1.3。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/HTTPS/" rel="tag"># HTTPS</a>
+              <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/27/CSS%E5%88%87%E6%8D%A2%E4%B8%BB%E9%A2%98%E6%96%B9%E6%A1%88/" rel="prev" title="CSS切换主题方案">
+      <i class="fa fa-chevron-left"></i> CSS切换主题方案
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/01/06/WSL2%E8%AE%BE%E7%BD%AE%E9%95%9C%E5%83%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" rel="next" title="WSL2设置镜像网络模式">
+      WSL2设置镜像网络模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">一、背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%BD%BF%E7%94%A8acme-sh%E7%94%B3%E8%AF%B7%E6%B3%9B%E5%9F%9F%E5%90%8D%E8%AF%81%E4%B9%A6"><span class="nav-number">2.</span> <span class="nav-text">二、使用acme.sh申请泛域名证书</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BA%E9%98%BF%E9%87%8C%E4%BA%91RAM%E8%A7%92%E8%89%B2"><span class="nav-number">2.1.</span> <span class="nav-text">1. 创建阿里云RAM角色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85acme-sh"><span class="nav-number">2.2.</span> <span class="nav-text">2. 安装acme.sh</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E9%85%8D%E7%BD%AE%E9%98%BF%E9%87%8C%E4%BA%91%E7%9A%84DNS%E4%BF%A1%E6%81%AF"><span class="nav-number">2.3.</span> <span class="nav-text">3. 配置阿里云的DNS信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E7%94%B3%E8%AF%B7%E6%B3%9B%E5%9F%9F%E5%90%8D%E8%AF%81%E4%B9%A6"><span class="nav-number">2.4.</span> <span class="nav-text">4. 申请泛域名证书</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6%E5%88%B0%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95"><span class="nav-number">2.5.</span> <span class="nav-text">5. 安装证书到指定目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E8%B0%83%E6%95%B4nginx%E9%85%8D%E7%BD%AE"><span class="nav-number">2.6.</span> <span class="nav-text">6. 调整nginx配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E9%85%8D%E7%BD%AEHTTP2%E5%92%8CTLS1-3"><span class="nav-number">2.7.</span> <span class="nav-text">三、配置HTTP2和TLS1.3</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryan Shang"
+      src="/images/Ryan.jpg">
+  <p class="site-author-name" itemprop="name">Ryan Shang</p>
+  <div class="site-description" itemprop="description">前端渣渣一枚，热爱科技，热爱搞事请</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:Ryan.Shang@outlook.com" title="E-Mail → mailto:Ryan.Shang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryan Shang</span>
+    <span class="post-meta-divider">| </span><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备18027486号 </a>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

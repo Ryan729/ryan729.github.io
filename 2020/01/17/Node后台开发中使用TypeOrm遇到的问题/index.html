@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Ryan.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Ryan.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.ryanshang.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言最近项目中使用Node开发，Nest.js作为框架，TypeOrm连接数据库，期间遇到一些坑，这里记录一下。 问题1. 插入数据之后返回的ID集合，ID相同在TypeOrm插入数据库操作的返回结果中，identifiers字段会是插入数据的id集合，预期情况应该是这样的：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node后台开发中使用TypeOrm遇到的问题">
+<meta property="og:url" content="https://www.ryanshang.com/2020/01/17/Node%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8TypeOrm%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="Ryan Shang">
+<meta property="og:description" content="前言最近项目中使用Node开发，Nest.js作为框架，TypeOrm连接数据库，期间遇到一些坑，这里记录一下。 问题1. 插入数据之后返回的ID集合，ID相同在TypeOrm插入数据库操作的返回结果中，identifiers字段会是插入数据的id集合，预期情况应该是这样的：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-02-08T10:34:21.098Z">
+<meta property="article:author" content="Ryan Shang">
+<meta property="article:tag" content="Node">
+<meta property="article:tag" content="TypeOrm">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.ryanshang.com/2020/01/17/Node%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8TypeOrm%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Node后台开发中使用TypeOrm遇到的问题 | Ryan Shang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ryan Shang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">生死看淡，不服就干</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2020/01/17/Node%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8TypeOrm%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Node后台开发中使用TypeOrm遇到的问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-17 00:00:00" itemprop="dateCreated datePublished" datetime="2020-01-17T00:00:00+08:00">2020-01-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近项目中使用Node开发，Nest.js作为框架，TypeOrm连接数据库，期间遇到一些坑，这里记录一下。</p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><h4 id="1-插入数据之后返回的ID集合，ID相同"><a href="#1-插入数据之后返回的ID集合，ID相同" class="headerlink" title="1. 插入数据之后返回的ID集合，ID相同"></a>1. 插入数据之后返回的ID集合，ID相同</h4><p>在TypeOrm插入数据库操作的返回结果中，<code>identifiers</code>字段会是插入数据的id集合，预期情况应该是这样的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123; <span class="attr">id</span>: <span class="number">1</span> &#125;,</span><br><span class="line">  &#123; <span class="attr">id</span>: <span class="number">2</span> &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>但实际开发中发现是这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123; <span class="attr">id</span>: <span class="number">1</span> &#125;,</span><br><span class="line">  &#123; <span class="attr">id</span>: <span class="number">1</span> &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>因为，业务中后面要根据返回的ID值给其他数据做关联，所以返回相同ID会造成异常。</p>
+<p>查看了github，有相关issue，但是一直处于open状态：<a target="_blank" rel="noopener" href="https://github.com/typeorm/typeorm/issues/2131%E3%80%82">https://github.com/typeorm/typeorm/issues/2131。</a></p>
+<p>最后临时方案是采用在后面操作中，用id+数组index的方式，拼出id。</p>
+<h4 id="2-JavaScript对数据库中int和bigint的区别对待"><a href="#2-JavaScript对数据库中int和bigint的区别对待" class="headerlink" title="2. JavaScript对数据库中int和bigint的区别对待"></a>2. JavaScript对数据库中int和bigint的区别对待</h4><p>刚开始开发中，线下测试数据库id字段采用int，数据库SELECT操作返回的结果是Number，但是使用bigint，数据库返回的为String，初步猜想是因为bigint的值范围会超过Number，所以采用String。</p>
+<p>但是这样会对我们业务产生巨大影戏那个，一方面，DTO校验会无法通过，另一方面，问题1中的业务逻辑会受影响。</p>
+<p>经过查找各方文档，解决方案是在数据库连接配置中配置：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;supportBigNumbers&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span></span><br></pre></td></tr></table></figure>
+
+<p>可以配置这个的原因是我们的业务ID距离Number的上线远远达不到，所以可以用这种方式让</p>
+<p>bigint也返回Number。</p>
+<p>但是这样配置，TypeOrm插入操作的返回值中的<code>identifiers</code>字段中的id还是String，所以问题1中的处理方式也要对String进行<code>parseInt</code>操作。</p>
+<h4 id="3-数据库版本区别问题"><a href="#3-数据库版本区别问题" class="headerlink" title="3. 数据库版本区别问题"></a>3. 数据库版本区别问题</h4><p>测试上线时，发现功能无法使用，测试环境正常，经过线上测试库分别连接测试定位后，发现还是<code>identifiers</code>，返回的id为<code>undefined</code>。</p>
+<p>线上数据库版本为5.6，测试数据库版本为5.7。TypeOrm的<code>insert()</code>生成的SQL会有插入id的操作，值为默认值，5.7中可以正常插入，5.6中会插入异常，返回值为<code>undefined</code>，导致报错异常事务回滚。</p>
+<p>经过测试，插入数据库操作时，id赋值为<code>null</code>可以解决，后更新上线，因为部署问题无法上线，等待后续上线后检验时候还存在问题。</p>
+<h4 id="4-TypeOrm数据库配置问题导致编译慢"><a href="#4-TypeOrm数据库配置问题导致编译慢" class="headerlink" title="4. TypeOrm数据库配置问题导致编译慢"></a>4. TypeOrm数据库配置问题导致编译慢</h4><p>项目刚开始开发时，每次本地编辑十分慢，查找文档等发现问题是配置原因，刚开始数据库的<code>entities</code>配置项是这样的：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;entities&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;src/entities/*.ts&quot;</span><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p>编译时候应该是先会把ts文件编译成js，所以耗时比较久，后改成</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;entities&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;output/nodeapp/kid-mis-backend/src/entities/*.js&quot;</span><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p>直接使用编译后的js文件，编译速度大大提升。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>后端开发和前端开发有很大的区别，各种解决问题思路不同，后端部分还有很多需要我学习的地方。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Node/" rel="tag"># Node</a>
+              <a href="/tags/TypeOrm/" rel="tag"># TypeOrm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/05/%E4%B8%AA%E4%BA%BA%E7%BB%88%E7%AB%AF%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%EF%BC%88zsh%EF%BC%89/" rel="prev" title="个人终端环境配置（zsh）">
+      <i class="fa fa-chevron-left"></i> 个人终端环境配置（zsh）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/11/06/%E4%BD%BF%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2HEXO%E5%8D%9A%E5%AE%A2%E5%B9%B6%E9%85%8D%E7%BD%AEHTTPS/" rel="next" title="使用服务器部署HEXO博客并配置HTTPS">
+      使用服务器部署HEXO博客并配置HTTPS <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE%E4%B9%8B%E5%90%8E%E8%BF%94%E5%9B%9E%E7%9A%84ID%E9%9B%86%E5%90%88%EF%BC%8CID%E7%9B%B8%E5%90%8C"><span class="nav-number">2.1.</span> <span class="nav-text">1. 插入数据之后返回的ID集合，ID相同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-JavaScript%E5%AF%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%ADint%E5%92%8Cbigint%E7%9A%84%E5%8C%BA%E5%88%AB%E5%AF%B9%E5%BE%85"><span class="nav-number">2.2.</span> <span class="nav-text">2. JavaScript对数据库中int和bigint的区别对待</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%89%88%E6%9C%AC%E5%8C%BA%E5%88%AB%E9%97%AE%E9%A2%98"><span class="nav-number">2.3.</span> <span class="nav-text">3. 数据库版本区别问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-TypeOrm%E6%95%B0%E6%8D%AE%E5%BA%93%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%98%E5%AF%BC%E8%87%B4%E7%BC%96%E8%AF%91%E6%85%A2"><span class="nav-number">2.4.</span> <span class="nav-text">4. TypeOrm数据库配置问题导致编译慢</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryan Shang"
+      src="/images/Ryan.jpg">
+  <p class="site-author-name" itemprop="name">Ryan Shang</p>
+  <div class="site-description" itemprop="description">前端渣渣一枚，热爱科技，热爱搞事请</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:Ryan.Shang@outlook.com" title="E-Mail → mailto:Ryan.Shang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryan Shang</span>
+    <span class="post-meta-divider">| </span><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备18027486号 </a>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

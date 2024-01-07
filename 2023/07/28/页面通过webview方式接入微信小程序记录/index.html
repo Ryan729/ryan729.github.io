@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Ryan.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Ryan.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.ryanshang.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、背景近期接到招聘小程序要内嵌商业产品的需求，这里大致记录下一些接入过程中涉及到的要点 二、差异点先说下小程序中的webview和普通h5页面的差异点 1. cookie的问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="页面通过webview方式接入微信小程序记录">
+<meta property="og:url" content="https://www.ryanshang.com/2023/07/28/%E9%A1%B5%E9%9D%A2%E9%80%9A%E8%BF%87webview%E6%96%B9%E5%BC%8F%E6%8E%A5%E5%85%A5%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="Ryan Shang">
+<meta property="og:description" content="一、背景近期接到招聘小程序要内嵌商业产品的需求，这里大致记录下一些接入过程中涉及到的要点 二、差异点先说下小程序中的webview和普通h5页面的差异点 1. cookie的问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-07-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-01-05T22:48:06.141Z">
+<meta property="article:author" content="Ryan Shang">
+<meta property="article:tag" content="微信小程序">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.ryanshang.com/2023/07/28/%E9%A1%B5%E9%9D%A2%E9%80%9A%E8%BF%87webview%E6%96%B9%E5%BC%8F%E6%8E%A5%E5%85%A5%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%B0%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>页面通过webview方式接入微信小程序记录 | Ryan Shang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ryan Shang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">生死看淡，不服就干</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2023/07/28/%E9%A1%B5%E9%9D%A2%E9%80%9A%E8%BF%87webview%E6%96%B9%E5%BC%8F%E6%8E%A5%E5%85%A5%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          页面通过webview方式接入微信小程序记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-28 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-28T00:00:00+08:00">2023-07-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>近期接到招聘小程序要内嵌商业产品的需求，这里大致记录下一些接入过程中涉及到的要点</p>
+<h3 id="二、差异点"><a href="#二、差异点" class="headerlink" title="二、差异点"></a>二、差异点</h3><p>先说下小程序中的webview和普通h5页面的差异点</p>
+<h4 id="1-cookie的问题"><a href="#1-cookie的问题" class="headerlink" title="1. cookie的问题"></a>1. cookie的问题</h4><p>小程序中的cookie和小程序webview中的cookie不共享</p>
+<h4 id="2-小程序webview中只能使用部分微信jssdk的功能"><a href="#2-小程序webview中只能使用部分微信jssdk的功能" class="headerlink" title="2. 小程序webview中只能使用部分微信jssdk的功能"></a>2. 小程序webview中只能使用部分微信jssdk的功能</h4><p>具体参考：微信小程序webview页面<br>支付功能不在其中，按照微信要求不能在当前页面中直接调用微信支付，需要跳转到一个微信小程序原生页面来进行支付操作</p>
+<h3 id="三、接入要点"><a href="#三、接入要点" class="headerlink" title="三、接入要点"></a>三、接入要点</h3><h4 id="1-登录态"><a href="#1-登录态" class="headerlink" title="1. 登录态"></a>1. 登录态</h4><p>在URL中增加登录票据，由前端获取后通过js注入cookie</p>
+<h4 id="2-支付功能的调整"><a href="#2-支付功能的调整" class="headerlink" title="2. 支付功能的调整"></a>2. 支付功能的调整</h4><p>整体方案：在小程序中新增一个专用充值页面，业务页面（小程序webview内嵌页面）需要充值时，携带参数跳转到小程序充值页面，充值完成后再跳回到业务页面<br>具体流程：</p>
+<ul>
+<li>用户选择商业产品的套餐</li>
+<li>业务前端发送用户选择数据和当前场景（微信小程序）等信息给业务后端</li>
+<li>业务后端获取数据后，处理充值参数，然后调用PMC获取充值参数的接口，获取充值参数返回给业务前端</li>
+<li>业务前端把参数拼接到小程序路由，跳转到小程序充值页面</li>
+<li>小程序充值页面充值完成后，跳转回业务页面</li>
+</ul>
+<h4 id="3-在小程序管理后台中配置域名"><a href="#3-在小程序管理后台中配置域名" class="headerlink" title="3. 在小程序管理后台中配置域名"></a>3. 在小程序管理后台中配置域名</h4><p>在小程序的webview中访问页面需要配置两种域名：</p>
+<ul>
+<li>服务器域名：接口请求、CDN静态资源等的域名，平时的小程序开发就需要配置，这里不再赘述</li>
+<li>业务域名：在webview中打开需要配置的域名，针对需要再小程序使用webview内嵌的场景，除了在小程序后台配置域名外，还需要进行域名验证，让微信确认此域名是你拥有。</li>
+</ul>
+<p>业务域名验证方式：<br>在业务域名根路径下增加微信提供的文件，里面包含验证的加密串。</p>
+<p>方案：</p>
+<ul>
+<li>可在域名对应集群下增加静态资源托管</li>
+<li>可在nginx层根据location分流由nginx层托管。</li>
+</ul>
+<h4 id="4-页面路由常见处理逻辑兼容"><a href="#4-页面路由常见处理逻辑兼容" class="headerlink" title="4. 页面路由常见处理逻辑兼容"></a>4. 页面路由常见处理逻辑兼容</h4><p>微信JSSDK：<a target="_blank" rel="noopener" href="https://res.wx.qq.com/open/js/jweixin-1.6.0.js">https://res.wx.qq.com/open/js/jweixin-1.6.0.js</a></p>
+<p>页面路由会退：window.wx.navigateBack();<br>关闭当前页面：window.wx.miniProgram.navigateBack();</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" rel="tag"># 微信小程序</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/06/24/%E6%9B%B4%E7%A8%B3%E5%AE%9A%E7%9A%84%E4%BD%BF%E7%94%A8Homebrew/" rel="prev" title="更稳定的使用Homebrew">
+      <i class="fa fa-chevron-left"></i> 更稳定的使用Homebrew
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/08/27/CSS%E5%88%87%E6%8D%A2%E4%B8%BB%E9%A2%98%E6%96%B9%E6%A1%88/" rel="next" title="CSS切换主题方案">
+      CSS切换主题方案 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">一、背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%B7%AE%E5%BC%82%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">二、差异点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-cookie%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.1.</span> <span class="nav-text">1. cookie的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%B0%8F%E7%A8%8B%E5%BA%8Fwebview%E4%B8%AD%E5%8F%AA%E8%83%BD%E4%BD%BF%E7%94%A8%E9%83%A8%E5%88%86%E5%BE%AE%E4%BF%A1jssdk%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="nav-number">2.2.</span> <span class="nav-text">2. 小程序webview中只能使用部分微信jssdk的功能</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%8E%A5%E5%85%A5%E8%A6%81%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">三、接入要点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%99%BB%E5%BD%95%E6%80%81"><span class="nav-number">3.1.</span> <span class="nav-text">1. 登录态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%94%AF%E4%BB%98%E5%8A%9F%E8%83%BD%E7%9A%84%E8%B0%83%E6%95%B4"><span class="nav-number">3.2.</span> <span class="nav-text">2. 支付功能的调整</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%9C%A8%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%AE%A1%E7%90%86%E5%90%8E%E5%8F%B0%E4%B8%AD%E9%85%8D%E7%BD%AE%E5%9F%9F%E5%90%8D"><span class="nav-number">3.3.</span> <span class="nav-text">3. 在小程序管理后台中配置域名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E9%A1%B5%E9%9D%A2%E8%B7%AF%E7%94%B1%E5%B8%B8%E8%A7%81%E5%A4%84%E7%90%86%E9%80%BB%E8%BE%91%E5%85%BC%E5%AE%B9"><span class="nav-number">3.4.</span> <span class="nav-text">4. 页面路由常见处理逻辑兼容</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryan Shang"
+      src="/images/Ryan.jpg">
+  <p class="site-author-name" itemprop="name">Ryan Shang</p>
+  <div class="site-description" itemprop="description">前端渣渣一枚，热爱科技，热爱搞事请</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:Ryan.Shang@outlook.com" title="E-Mail → mailto:Ryan.Shang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryan Shang</span>
+    <span class="post-meta-divider">| </span><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备18027486号 </a>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

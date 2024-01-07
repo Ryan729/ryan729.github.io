@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Ryan.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Ryan.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.ryanshang.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、背景最近老的服务器过期，购买了新的服务器，需要对原有服务器的服务进行迁移，刚好以前部署博客时没有记录，这里记录下在服务器上部署Hexo博客的过程(假设已有Hexo的git工程)。 二、准备工作1. 大致流程以前为了简单方便，部署时候采用了Hexo的静态博客方案。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用服务器部署HEXO博客并配置HTTPS">
+<meta property="og:url" content="https://www.ryanshang.com/2021/11/06/%E4%BD%BF%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2HEXO%E5%8D%9A%E5%AE%A2%E5%B9%B6%E9%85%8D%E7%BD%AEHTTPS/index.html">
+<meta property="og:site_name" content="Ryan Shang">
+<meta property="og:description" content="一、背景最近老的服务器过期，购买了新的服务器，需要对原有服务器的服务进行迁移，刚好以前部署博客时没有记录，这里记录下在服务器上部署Hexo博客的过程(假设已有Hexo的git工程)。 二、准备工作1. 大致流程以前为了简单方便，部署时候采用了Hexo的静态博客方案。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-01-07T00:45:39.914Z">
+<meta property="article:author" content="Ryan Shang">
+<meta property="article:tag" content="Git">
+<meta property="article:tag" content="HTTPS">
+<meta property="article:tag" content="Hexo">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.ryanshang.com/2021/11/06/%E4%BD%BF%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2HEXO%E5%8D%9A%E5%AE%A2%E5%B9%B6%E9%85%8D%E7%BD%AEHTTPS/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>使用服务器部署HEXO博客并配置HTTPS | Ryan Shang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ryan Shang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">生死看淡，不服就干</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2021/11/06/%E4%BD%BF%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2HEXO%E5%8D%9A%E5%AE%A2%E5%B9%B6%E9%85%8D%E7%BD%AEHTTPS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用服务器部署HEXO博客并配置HTTPS
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-11-06 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-06T00:00:00+08:00">2021-11-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>最近老的服务器过期，购买了新的服务器，需要对原有服务器的服务进行迁移，刚好以前部署博客时没有记录，这里记录下在服务器上部署Hexo博客的过程(假设已有Hexo的git工程)。</p>
+<h3 id="二、准备工作"><a href="#二、准备工作" class="headerlink" title="二、准备工作"></a>二、准备工作</h3><h4 id="1-大致流程"><a href="#1-大致流程" class="headerlink" title="1. 大致流程"></a>1. 大致流程</h4><p>以前为了简单方便，部署时候采用了Hexo的静态博客方案。</p>
+<p>大致使用流程是：</p>
+<ol>
+<li>本地编写Markdown文档</li>
+<li>本地Hexo解析成静态页</li>
+<li>提交到服务器上的Git或者GitHub等多仓库</li>
+<li>Nginx对外服务</li>
+<li>用户访问</li>
+</ol>
+<h4 id="2-相关环境"><a href="#2-相关环境" class="headerlink" title="2. 相关环境"></a>2. 相关环境</h4><p>域名：</p>
+<ul>
+<li>配置好DNS解析，例如：blog.xxx.com，指向服务器ip</li>
+</ul>
+<p>服务器：</p>
+<ul>
+<li>Git</li>
+<li>Nginx</li>
+</ul>
+<p>PC&#x2F;Mac：</p>
+<ul>
+<li>Node</li>
+<li>Git</li>
+<li>hexo-cli</li>
+<li>Markdown编辑器</li>
+<li>Terminal</li>
+</ul>
+<p>Hexo工程：</p>
+<ul>
+<li>已经创建好的Hexo工程，执行<code>hexo server</code>，可以按照提示访问开发页面</li>
+</ul>
+<h3 id="三、部署过程（以root用户为例）"><a href="#三、部署过程（以root用户为例）" class="headerlink" title="三、部署过程（以root用户为例）"></a>三、部署过程（以root用户为例）</h3><h4 id="1-给服务器增加git用户"><a href="#1-给服务器增加git用户" class="headerlink" title="1. 给服务器增加git用户"></a>1. 给服务器增加git用户</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adduser git</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-配置SSH公钥登录"><a href="#2-配置SSH公钥登录" class="headerlink" title="2. 配置SSH公钥登录"></a>2. 配置SSH公钥登录</h4><p>配置SSH公钥登录是为了实现类似在Github中配置公钥可以免密码直接操作Git的效果。</p>
+<p>先切换用户，然后创建文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">su git <span class="comment"># 切换到git用户</span></span><br><span class="line"><span class="built_in">cd</span> ~ <span class="comment"># 切换刀git用户的主文件夹</span></span><br><span class="line"><span class="built_in">mkdir</span> .ssh <span class="comment"># 创建.ssh文件夹</span></span><br><span class="line"><span class="built_in">cd</span> .ssh <span class="comment"># 切换刀.ssh文件夹</span></span><br><span class="line"><span class="built_in">touch</span> authorized_keys <span class="comment"># 创建ssh访问公钥文件</span></span><br></pre></td></tr></table></figure>
+
+<p>编辑<code>/home/git/.ssh/authorized_keys</code>，配置公钥，这里不做额外赘述。</p>
+<p>修改<code>authorized_keys</code>权限：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exit</span> <span class="comment"># 退出git用户，会回到root用户</span></span><br><span class="line"><span class="built_in">chmod</span> 644 /home/git/.ssh/authorized_keys <span class="comment"># 调整文件权限</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-创建Git仓库并且配置Git-Hooks"><a href="#3-创建Git仓库并且配置Git-Hooks" class="headerlink" title="3. 创建Git仓库并且配置Git Hooks"></a>3. 创建Git仓库并且配置Git Hooks</h4><p>创建一个Git裸库（用于保存Hexo构建后的代码）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">su git <span class="comment"># 切换到git用户</span></span><br><span class="line"><span class="built_in">cd</span> ~ <span class="comment"># 切换刀git用户的主文件夹</span></span><br><span class="line">git init --bare blog.git  <span class="comment">#建立一个名字叫blog.git的裸库</span></span><br></pre></td></tr></table></figure>
+
+<p>创建一个临时文件夹，用于Git Hooks操作文件用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~ <span class="comment"># 切换刀git用户的主文件夹</span></span><br><span class="line"><span class="built_in">mkdir</span> tmp</span><br></pre></td></tr></table></figure>
+
+<p>配置Git Hooks：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /home/git/blog.git/hooks <span class="comment"># 进入git hooks的目录</span></span><br><span class="line">vim post-receive <span class="comment"># 编辑钩子内容</span></span><br></pre></td></tr></table></figure>
+
+<p><code>post-receive</code>内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">GIT_REPO=/home/git/blog.git</span><br><span class="line">TMP_GIT_CLONE=/home/git/tmp/blog</span><br><span class="line">PUBLIC_WWW=/home/git/blog</span><br><span class="line"><span class="built_in">rm</span> -rf <span class="variable">$&#123;TMP_GIT_CLONE&#125;</span></span><br><span class="line">git <span class="built_in">clone</span> <span class="variable">$GIT_REPO</span> <span class="variable">$TMP_GIT_CLONE</span></span><br><span class="line"><span class="built_in">rm</span> -rf <span class="variable">$&#123;PUBLIC_WWW&#125;</span>/*</span><br><span class="line"><span class="built_in">cp</span> -rf <span class="variable">$&#123;TMP_GIT_CLONE&#125;</span>/* <span class="variable">$&#123;PUBLIC_WWW&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>切换回root用户，赋予<code>post-receive</code>执行权限：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exit</span> <span class="comment"># 退出git用户，会回到root用户</span></span><br><span class="line"><span class="built_in">chmod</span> +x /home/git/blog.git/hooks/post-receive</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-配置nginx"><a href="#4-配置nginx" class="headerlink" title="4. 配置nginx"></a>4. 配置nginx</h4><p>在<code>/etc/nginx/conf.d</code>中增加一个配置文件<code>blog.conf</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/nginx/conf.d <span class="comment"># 进入nginx站点配置文件夹</span></span><br><span class="line">vim blog.conf <span class="comment"># 编辑博客站点配置</span></span><br></pre></td></tr></table></figure>
+
+<p>站点配置：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">  <span class="attribute">server_name</span> blog.xxx.com;</span><br><span class="line">  <span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span> /home/git/blog;</span><br><span class="line">    <span class="attribute">index</span> index.html;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>保存后执行<code>nginx -s reload</code>重新加载配置。</p>
+<h4 id="5-在Hexo中配置发布信息"><a href="#5-在Hexo中配置发布信息" class="headerlink" title="5. 在Hexo中配置发布信息"></a>5. 在Hexo中配置发布信息</h4><p>编辑Hexo工程中的<code>_config.yml</code>，增加：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="string">git@blog.xxx.com:/home/git/blog.git</span></span><br><span class="line">    <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<p>在PC&#x2F;Mac的Hexo工程中，执行构建发布命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo c | hexo g | hexo d</span><br></pre></td></tr></table></figure>
+
+<p>正常情况下，执行完成后，hexo会把构建好的页面push到服务器上刚刚新建的裸库中，然后会触发<code>post-receive</code>钩子，把资源拉取到服务器的<code>/home/git/blog</code>目录中。这时候就可以在浏览器中访问<code>blog.xxx.com</code>来查看博客内容了。</p>
+<h3 id="四、配置HTTPS（以root用户为例）"><a href="#四、配置HTTPS（以root用户为例）" class="headerlink" title="四、配置HTTPS（以root用户为例）"></a>四、配置HTTPS（以root用户为例）</h3><p>博客配置好了，下一步当然是配置HTTPS了，这里使用certbot来快速配置https证书。</p>
+<h4 id="1-安装certbot"><a href="#1-安装certbot" class="headerlink" title="1. 安装certbot"></a>1. 安装certbot</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install certbot -y</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-使用cerbot申请证书"><a href="#2-使用cerbot申请证书" class="headerlink" title="2. 使用cerbot申请证书"></a>2. 使用cerbot申请证书</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用方法：certbot certonly --webroot -w [Web站点目录] -d [站点域名] -m [联系人email地址] --agree-tos</span></span><br><span class="line"><span class="comment"># 例如：</span></span><br><span class="line">sudo certbot certonly --webroot -w /home/git/blog -d blog.xxx.com -m xxx@xxx.com --agree-tos</span><br></pre></td></tr></table></figure>
+
+<p>申请成功会提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IMPORTANT NOTES:</span><br><span class="line"> - Congratulations! Your certificate and chain have been saved at</span><br><span class="line">   /etc/letsencrypt/live/blog.xxx.com/fullchain.pem. Your cert will</span><br><span class="line">   expire on 2017-03-20. To obtain a new or tweaked version of this</span><br><span class="line">   certificate in the future, simply run certbot again. To</span><br><span class="line">   non-interactively renew *all* of your certificates, run &quot;certbot</span><br><span class="line">   renew&quot;</span><br><span class="line"> - If you like Certbot, please consider supporting our work by:</span><br><span class="line"></span><br><span class="line">   Donating to ISRG / Let&#x27;s Encrypt:   https://letsencrypt.org/donate</span><br><span class="line">   Donating to EFF:                    https://eff.org/donate-le</span><br></pre></td></tr></table></figure>
+
+<p>证书的保存位置在：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/letsencrypt/live/blog.xxx.com/</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-调整nginx配置"><a href="#3-调整nginx配置" class="headerlink" title="3. 调整nginx配置"></a>3. 调整nginx配置</h4><p>修改<code>/etc/nginx/conf.d/blog.conf</code>：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line"><span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line"><span class="attribute">server_name</span> blog.xxx.com;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^</span> https://<span class="variable">$server_name</span><span class="variable">$request_uri</span>? <span class="literal">permanent</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="attribute">listen</span> <span class="number">443</span> ssl;</span><br><span class="line">  <span class="attribute">server_name</span> blog.xxx.com;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">charset</span> utf-<span class="number">8</span>;</span><br><span class="line">  <span class="attribute">root</span> /home/git/blog;</span><br><span class="line">  <span class="attribute">index</span> index.html;</span><br><span class="line"></span><br><span class="line">  <span class="comment"># letsencrypt生成的文件</span></span><br><span class="line">  <span class="attribute">ssl_certificate</span> /etc/letsencrypt/live/blog.xxx.com/fullchain.pem;</span><br><span class="line">  <span class="attribute">ssl_certificate_key</span> /etc/letsencrypt/live/blog.xxx.com/privkey.pem;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">ssl_session_timeout</span> <span class="number">1d</span>;</span><br><span class="line">  <span class="attribute">ssl_session_cache</span> shared:SSL:<span class="number">50m</span>;</span><br><span class="line">  <span class="attribute">ssl_session_tickets</span> <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">ssl_protocols</span> TLSv1 TLSv1.<span class="number">1</span> TLSv1.<span class="number">2</span>;</span><br><span class="line">  <span class="comment"># 一般推荐使用的ssl_ciphers值: https://wiki.mozilla.org/Security/Server_Side_TLS</span></span><br><span class="line">  <span class="attribute">ssl_ciphers</span> <span class="string">&#x27;ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128:AES256:AES:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK&#x27;</span>;</span><br><span class="line">  <span class="attribute">ssl_prefer_server_ciphers</span> <span class="literal">on</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>保存后执行<code>nginx -s reload</code>重新加载配置。</p>
+<p>在浏览器中访问<code>http://blog.xxx.com</code>，就会自动跳转到<code>https://blog.xxx.com</code>了。如果是 chrome 浏览器，在地址栏点击小锁的图标，可以查看证书的详情。</p>
+<h4 id="4-自动更新证书"><a href="#4-自动更新证书" class="headerlink" title="4. 自动更新证书"></a>4. 自动更新证书</h4><p>证书是有有效期的，需要再配置下自动更新证书，这样我们就可以不用关心了。</p>
+<p>执行<code>crontab -e</code>，增加一行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 每月1号5时执行执行一次更新，并重启nginx服务器</span></span><br><span class="line">00 05 01 * * /usr/bin/certbot renew --quiet &amp;&amp; /bin/systemctl restart nginx</span><br></pre></td></tr></table></figure>
+
+<p>这样在每个月5日的凌晨都会执行一次更新，保证证书不过期。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Git/" rel="tag"># Git</a>
+              <a href="/tags/HTTPS/" rel="tag"># HTTPS</a>
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/17/Node%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8TypeOrm%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" rel="prev" title="Node后台开发中使用TypeOrm遇到的问题">
+      <i class="fa fa-chevron-left"></i> Node后台开发中使用TypeOrm遇到的问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/10/23/WSL2%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/" rel="next" title="WSL2设置静态IP">
+      WSL2设置静态IP <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">一、背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">二、准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%A4%A7%E8%87%B4%E6%B5%81%E7%A8%8B"><span class="nav-number">2.1.</span> <span class="nav-text">1. 大致流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%9B%B8%E5%85%B3%E7%8E%AF%E5%A2%83"><span class="nav-number">2.2.</span> <span class="nav-text">2. 相关环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B%EF%BC%88%E4%BB%A5root%E7%94%A8%E6%88%B7%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">三、部署过程（以root用户为例）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%BB%99%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%A2%9E%E5%8A%A0git%E7%94%A8%E6%88%B7"><span class="nav-number">3.1.</span> <span class="nav-text">1. 给服务器增加git用户</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E9%85%8D%E7%BD%AESSH%E5%85%AC%E9%92%A5%E7%99%BB%E5%BD%95"><span class="nav-number">3.2.</span> <span class="nav-text">2. 配置SSH公钥登录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%88%9B%E5%BB%BAGit%E4%BB%93%E5%BA%93%E5%B9%B6%E4%B8%94%E9%85%8D%E7%BD%AEGit-Hooks"><span class="nav-number">3.3.</span> <span class="nav-text">3. 创建Git仓库并且配置Git Hooks</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E9%85%8D%E7%BD%AEnginx"><span class="nav-number">3.4.</span> <span class="nav-text">4. 配置nginx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E5%9C%A8Hexo%E4%B8%AD%E9%85%8D%E7%BD%AE%E5%8F%91%E5%B8%83%E4%BF%A1%E6%81%AF"><span class="nav-number">3.5.</span> <span class="nav-text">5. 在Hexo中配置发布信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E9%85%8D%E7%BD%AEHTTPS%EF%BC%88%E4%BB%A5root%E7%94%A8%E6%88%B7%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">四、配置HTTPS（以root用户为例）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85certbot"><span class="nav-number">4.1.</span> <span class="nav-text">1. 安装certbot</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8cerbot%E7%94%B3%E8%AF%B7%E8%AF%81%E4%B9%A6"><span class="nav-number">4.2.</span> <span class="nav-text">2. 使用cerbot申请证书</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E8%B0%83%E6%95%B4nginx%E9%85%8D%E7%BD%AE"><span class="nav-number">4.3.</span> <span class="nav-text">3. 调整nginx配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0%E8%AF%81%E4%B9%A6"><span class="nav-number">4.4.</span> <span class="nav-text">4. 自动更新证书</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryan Shang"
+      src="/images/Ryan.jpg">
+  <p class="site-author-name" itemprop="name">Ryan Shang</p>
+  <div class="site-description" itemprop="description">前端渣渣一枚，热爱科技，热爱搞事请</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:Ryan.Shang@outlook.com" title="E-Mail → mailto:Ryan.Shang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryan Shang</span>
+    <span class="post-meta-divider">| </span><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备18027486号 </a>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
