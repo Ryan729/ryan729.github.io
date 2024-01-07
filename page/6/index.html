@@ -158,6 +158,172 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2018/12/10/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%B0%83%E7%A0%94%E6%8A%A5%E5%91%8A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/12/10/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%B0%83%E7%A0%94%E6%8A%A5%E5%91%8A/" class="post-title-link" itemprop="url">小程序调研报告</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-10 00:00:00" itemprop="dateCreated datePublished" datetime="2018-12-10T00:00:00+08:00">2018-12-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="一、目的"><a href="#一、目的" class="headerlink" title="一、目的"></a>一、目的</h3><p>结合团队现阶段技术栈，找到目前最适合团队快速上手小程序的技术栈。</p>
+<h3 id="二、框架"><a href="#二、框架" class="headerlink" title="二、框架"></a>二、框架</h3><h4 id="1-现有框架对比"><a href="#1-现有框架对比" class="headerlink" title="1. 现有框架对比"></a>1. 现有框架对比</h4><table>
+<thead>
+<tr>
+<th align="center">1</th>
+<th align="center">小程序</th>
+<th align="center">wepy</th>
+<th align="center">mpvue</th>
+<th align="center">megalo</th>
+<th align="center">Taro</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">语法规范</td>
+<td align="center">小程序规范</td>
+<td align="center">类Vue规范</td>
+<td align="center">Vue规范</td>
+<td align="center">Vue规范</td>
+<td align="center">React规范</td>
+</tr>
+<tr>
+<td align="center">模板系统</td>
+<td align="center">字符串模板</td>
+<td align="center">字符串模板</td>
+<td align="center">字符串模板</td>
+<td align="center">字符串模板</td>
+<td align="center">JSX</td>
+</tr>
+<tr>
+<td align="center">类型系统</td>
+<td align="center">不支持</td>
+<td align="center">业务代码</td>
+<td align="center">业务代码</td>
+<td align="center">业务代码</td>
+<td align="center">业务代码 + JSX模板</td>
+</tr>
+<tr>
+<td align="center">组件规范</td>
+<td align="center">小程序组件</td>
+<td align="center">小程序组件</td>
+<td align="center">html标签 + 小程序组件</td>
+<td align="center">html标签 + 小程序组件</td>
+<td align="center">小程序组件</td>
+</tr>
+<tr>
+<td align="center">样式规范</td>
+<td align="center">wxss</td>
+<td align="center">sass, less, stylus</td>
+<td align="center">sass, less, postcss</td>
+<td align="center"></td>
+<td align="center">sass, less, postcss</td>
+</tr>
+<tr>
+<td align="center">组件化</td>
+<td align="center">小程序组件化</td>
+<td align="center">自定义组件化</td>
+<td align="center">Vue组件化规范</td>
+<td align="center">Vue组件化规范</td>
+<td align="center">React组件化规范</td>
+</tr>
+<tr>
+<td align="center">多端复用</td>
+<td align="center">无</td>
+<td align="center">复用为H5</td>
+<td align="center">复用为H5，将通过Weex支持移动端</td>
+<td align="center">复用为H5</td>
+<td align="center">复用为H5，将通过RN支持移动端</td>
+</tr>
+<tr>
+<td align="center">自动构建</td>
+<td align="center">无</td>
+<td align="center">内建构件系统</td>
+<td align="center">Webpack构建</td>
+<td align="center">内建构建系统 + Webpack构建</td>
+<td align="center">内建构建系统 + Webpack构建</td>
+</tr>
+<tr>
+<td align="center">上手成本</td>
+<td align="center">全新学习</td>
+<td align="center">熟悉Vue + wepy</td>
+<td align="center">熟悉Vue</td>
+<td align="center">熟悉Vue</td>
+<td align="center">熟悉React</td>
+</tr>
+<tr>
+<td align="center">数据流管理</td>
+<td align="center">无</td>
+<td align="center">Redux</td>
+<td align="center">Vuex</td>
+<td align="center">Vuex</td>
+<td align="center">Redux</td>
+</tr>
+</tbody></table>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/12/10/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%B0%83%E7%A0%94%E6%8A%A5%E5%91%8A/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2018/11/24/%E8%87%AA%E5%B7%B1%E5%B0%81%E8%A3%85%E6%96%B9%E6%B3%95%E6%95%B4%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -467,88 +633,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2018/04/15/CSS%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Ryan.jpg">
-      <meta itemprop="name" content="Ryan Shang">
-      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ryan Shang">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/15/CSS%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD/" class="post-title-link" itemprop="url">CSS垂直居中</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-04-15 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-15T00:00:00+08:00">2018-04-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="1-行内元素"><a href="#1-行内元素" class="headerlink" title="1. 行内元素"></a>1. 行内元素</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.parent</span> &#123;</span><br><span class="line">    <span class="attribute">height</span>: X; <span class="comment">/* X为一个绝对高度 */</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.child</span> &#123;</span><br><span class="line">    line-hight: X;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="2-Table"><a href="#2-Table" class="headerlink" title="2. Table"></a>2. Table</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.parent</span> &#123;</span><br><span class="line">  <span class="attribute">display</span>: table;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.child</span> &#123;</span><br><span class="line">  <span class="attribute">display</span>: table-cell;</span><br><span class="line">  <span class="attribute">vertical-align</span>: middle;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="3-绝对定位（left-height）"><a href="#3-绝对定位（left-height）" class="headerlink" title="3. 绝对定位（left+height）"></a>3. 绝对定位（left+height）</h4>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/04/15/CSS%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -620,7 +704,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -633,7 +717,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-count">33</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
