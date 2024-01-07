@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Ryan.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Ryan.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.ryanshang.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、前言 为什么要研究这篇内容：  每天都在和浏览器打交道  一道面试题  开拓视野   通过了解一个url的请求发生了什么来了解现代Web服务架构的演进，这里的每一个环节深挖下去都是一个很大的方向，所里这里仅做一个简介，不会深挖每个环节。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个URL的旅途">
+<meta property="og:url" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/index.html">
+<meta property="og:site_name" content="Ryan Shang">
+<meta property="og:description" content="一、前言 为什么要研究这篇内容：  每天都在和浏览器打交道  一道面试题  开拓视野   通过了解一个url的请求发生了什么来了解现代Web服务架构的演进，这里的每一个环节深挖下去都是一个很大的方向，所里这里仅做一个简介，不会深挖每个环节。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%871.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%872.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%873.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%874.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%875.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%876.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%877.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%878.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%879.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8710.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8711.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8712.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8713.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8714.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8715.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8716.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8717.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8718.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8719.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8720.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8721.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8722.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8723.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8724.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8725.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8726.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8727.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8728.png">
+<meta property="og:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8729.png">
+<meta property="article:published_time" content="2021-06-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-01-07T11:33:04.289Z">
+<meta property="article:author" content="Ryan Shang">
+<meta property="article:tag" content="小知识">
+<meta property="article:tag" content="HTTP">
+<meta property="article:tag" content="HTTPS">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%871.png">
+
+<link rel="canonical" href="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>一个URL的旅途 | Ryan Shang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ryan Shang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">生死看淡，不服就干</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一个URL的旅途
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-26 00:00:00" itemprop="dateCreated datePublished" datetime="2021-06-26T00:00:00+08:00">2021-06-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%871.png" alt="01"></p>
+<p>为什么要研究这篇内容：</p>
+<ul>
+<li><p>每天都在和浏览器打交道</p>
+</li>
+<li><p>一道面试题</p>
+</li>
+<li><p>开拓视野</p>
+</li>
+</ul>
+<p>通过了解一个url的请求发生了什么来了解现代Web服务架构的演进，这里的每一个环节深挖下去都是一个很大的方向，所里这里仅做一个简介，不会深挖每个环节。</p>
+<h2 id="二、现代Web服务架构的演进"><a href="#二、现代Web服务架构的演进" class="headerlink" title="二、现代Web服务架构的演进"></a>二、现代Web服务架构的演进</h2><h3 id="1-基础的样子"><a href="#1-基础的样子" class="headerlink" title="1. 基础的样子"></a>1. 基础的样子</h3><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%872.png" alt="02"></p>
+<p>用户通过在浏览器输入IP，访问通过存放在服务器中的HTML。</p>
+<p>这时候就会有两个问题：</p>
+<ul>
+<li><p>浏览器和服务器如何进行通信？</p>
+</li>
+<li><p>客户的内网IP怎么和公网IP进行通信？</p>
+</li>
+</ul>
+<h4 id="1-浏览器和服务器如何进行通信？"><a href="#1-浏览器和服务器如何进行通信？" class="headerlink" title="(1) 浏览器和服务器如何进行通信？"></a>(1) 浏览器和服务器如何进行通信？</h4><h5 id="①-TCP、UDP和HTTP"><a href="#①-TCP、UDP和HTTP" class="headerlink" title="① TCP、UDP和HTTP"></a>① TCP、UDP和HTTP</h5><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%873.png" alt="03"></p>
+<p>这三个关键词可以说是现代Web的基石，现在常说的前后端开发基本上基于的都是TCP、UDP和HTTP，在TCP&#x2F;IP的五层模型中，TCP和UDP属于传输层，HTTP属于应用层，不是很严谨的说，HTTP基于TCP协议。</p>
+<p><strong>TCP：</strong></p>
+<ul>
+<li>面向连接(网络底层的数据传输)，可靠，慢，资源占用多</li>
+<li>三次握手，四次挥手</li>
+</ul>
+<p>关于TCP的三次握手，有个很经典的笑话：</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">「嗯，我想听一个 TCP 的笑话。」</span><br><span class="line">「好的，我会给你讲一个TCP 的笑话。」</span><br><span class="line">「好的，我会听一个TCP 的笑话。」</span><br><span class="line">「你准备好听一个TCP 的笑话么？」</span><br><span class="line">「嗯，我准备好听一个TCP 的笑话」</span><br><span class="line">「Ok，那我要发 TCP 笑话了。大概有 10 秒，20 个字。」</span><br><span class="line">「嗯，我准备收你那个 10 秒时长，20 个字的笑话了。」</span><br><span class="line">「抱歉，你的连接超时了。你好，你想听 TCP 的笑话么？」</span><br><span class="line">「我给你们讲个 UDP 的笑话吧，哈哈哈哈」</span><br></pre></td></tr></table></figure>
+
+<p><strong>UDP：</strong></p>
+<ul>
+<li>无连接，不可靠，快，资源占用少</li>
+</ul>
+<p><strong>HTTP：</strong></p>
+<ul>
+<li>简单快速、灵活、无状态、无连接(应用层面的沟通交互)</li>
+</ul>
+<h5 id="②-HTTP的简介"><a href="#②-HTTP的简介" class="headerlink" title="② HTTP的简介"></a>② HTTP的简介</h5><p>HTTP是浏览器中最常见的协议，基本上现在的所有页面都是基于该协议。</p>
+<p>HTTP基于TCP，当然也继承了TCP的可靠性，当浏览器和服务器进行通信的时候，也会进行三次握手和四次挥手。</p>
+<p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%874.png" alt="04"></p>
+<p>这个过程比较复杂，如果把女朋友当作客户端，把男朋友当作服务端，那么大概就是这个样子：</p>
+<p><strong>三次握手：</strong></p>
+<ul>
+<li>女朋友向程序员提出约会(Seq &#x3D; x)的建议，然后女朋友进入SYN_SEND状态。 </li>
+<li>程序员收到后同意了去约会(ACK &#x3D; x + 1), 然后向女朋友建议去吃麻辣烫吧(Seq &#x3D; y)，程序员进入SYN_RCVD状态。</li>
+<li>女朋友收到建议后，勉为其难的答应了，然后告诉程序员说 那好吧(ACK &#x3D; y + 1)。女朋友就进入了ESTABLISHED状态， 程序员也进入了 ESTABLISHED状态，整个约会讨论结束。</li>
+</ul>
+<p><strong>四次挥手：</strong></p>
+<ul>
+<li>女朋友向程序员提出分手</li>
+<li>程序员告诉女朋友说，我知道了，但是要考虑一下</li>
+<li>程序员考虑清楚后，跟女朋友说那就分手吧</li>
+<li>女朋友接收到程序员的消息后，然后还在等程序员发挽留的消息，然而等了两天后没等到，就认为程序员是真的不会再发消息来了，于是就拉黑删除程序员，关闭连接了。</li>
+</ul>
+<p><strong>HTTP的版本特点：</strong></p>
+<ul>
+<li>HTTP&#x2F;0.9：无状态、只有GET</li>
+<li>HTTP&#x2F;1.0：支持POST、增加头信息、增加二进制文件</li>
+<li>HTTP&#x2F;1.1：Keep-Alive、管线化</li>
+<li>HTTP&#x2F;2.0：多路复用、服务器推送</li>
+</ul>
+<h5 id="③-HTTPS的简介"><a href="#③-HTTPS的简介" class="headerlink" title="③ HTTPS的简介"></a>③ HTTPS的简介</h5><p>当网络变得越来越普遍的时候，安全性就越来越重要，这时候HTTPS就出现了。HTTPS经由HTTP进行通信，但利用SSL&#x2F;TLS来加密数据包。HTTPS开发的主要目的，是提供对网站服务器的身份认证，保护交换资料的隐私与完整性。</p>
+<p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%875.png" alt="05"></p>
+<p><strong>HTTPS的大致通信流程：</strong></p>
+<ol>
+<li>客户端发起一个http请求，连接到服务器的443端口</li>
+<li>服务端把自己的信息以数字证书的形式返回给客户端</li>
+<li>浏览器验证证书的合法性</li>
+<li>生成随机密码（对称加密）</li>
+<li>用服务器公钥加密后发送给服务器</li>
+</ol>
+<h5 id="④-服务器"><a href="#④-服务器" class="headerlink" title="④ 服务器"></a>④ 服务器</h5><p>硬件更加可靠的能被其他终端访问的终端，管理资源并为用户提供服务，常见系统类型：</p>
+<ul>
+<li>GNU&#x2F;Linux(Debian、RedHat、Arch)</li>
+<li>Windows Server</li>
+<li>MacOS Server</li>
+</ul>
+<p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%876.png" alt="06"></p>
+<h4 id="2-用户的内网IP怎么和公网IP进行通信？"><a href="#2-用户的内网IP怎么和公网IP进行通信？" class="headerlink" title="(2) 用户的内网IP怎么和公网IP进行通信？"></a>(2) 用户的内网IP怎么和公网IP进行通信？</h4><p>当用户越来越多，多个用户可能在同一个局域网内，走同一个网络出口访问服务器。</p>
+<p>这时候，用户设备使用的是内网IP，这时候他们如何和公网IP就行通信呢？</p>
+<p>这就需要用到下面讲到的NAT技术。</p>
+<h3 id="2-NAT"><a href="#2-NAT" class="headerlink" title="2. NAT"></a>2. NAT</h3><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%877.png" alt="07"></p>
+<p>用户的请求会在路由器中通过NAT技术转换为公网请求，发送给服务器。这里也会有两个问题：</p>
+<ul>
+<li><p>NAT是什么？</p>
+</li>
+<li><p>我们常用的是URL，怎么和IP关联起来？</p>
+</li>
+</ul>
+<h4 id="1-NAT是什么？"><a href="#1-NAT是什么？" class="headerlink" title="(1) NAT是什么？"></a>(1) NAT是什么？</h4><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%878.png" alt="08"></p>
+<p>NAT（Network Address Translation），是指网络地址转换，NAT是用于在本地网络中使用私有地址，在连接互联网时转而使用全局 IP 地址的技术，旨在通过将一个外部 IP 地址和端口映射到更大的内部 IP 地址集来转换 IP 地址。 基本上，NAT 使用流量表将流量从一个外部（主机）IP 地址和端口号路由到与网络上的终结点关联的正确内部 IP 地址。</p>
+<p>常见的NAT实现方式：</p>
+<ul>
+<li>静态NAT(一对一)</li>
+<li>动态NAT(多对多)</li>
+<li>NAT重载(PAT端口地址转换)</li>
+</ul>
+<h4 id="2-我们常用的是URL，怎么和IP关联起来？"><a href="#2-我们常用的是URL，怎么和IP关联起来？" class="headerlink" title="(2) 我们常用的是URL，怎么和IP关联起来？"></a>(2) 我们常用的是URL，怎么和IP关联起来？</h4><p>想要了解URL和IP的关联，首先先得了解下URI、URL、URN：</p>
+<ul>
+<li>URN (Uniform Resource Name, 统一资源名称)：<ul>
+<li>Ryan Shang</li>
+<li>ISBN 0-486-27557-4</li>
+</ul>
+</li>
+<li>URL (Uniform Resource Locator,统一资源定位符)：<ul>
+<li>file:&#x2F;&#x2F;&#x2F;home&#x2F;username&#x2F;RomeoAndJuliet.pdf</li>
+<li>Tel: &#x2F;&#x2F;13800138000</li>
+</ul>
+</li>
+<li>URI (Uniform Resource Identifier, 统一资源标识符)</li>
+</ul>
+<p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%879.png" alt="09"></p>
+<p>为了不让用户记住无规则的IP地址，让用户能使用URL来访问网站，出现了DNS服务来解决这个问题。</p>
+<h3 id="3-DNS"><a href="#3-DNS" class="headerlink" title="3. DNS"></a>3. DNS</h3><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8710.png" alt="10"></p>
+<p>我们继续带着两个问题来学习：</p>
+<ul>
+<li>DNS是什么？</li>
+<li>现阶段如何提高服务稳定性？</li>
+</ul>
+<h4 id="1-DNS是什么？"><a href="#1-DNS是什么？" class="headerlink" title="(1) DNS是什么？"></a>(1) DNS是什么？</h4><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8711.png" alt="11"></p>
+<p>域名系统（英语：Domain Name System，缩写：DNS）是互联网的一项服务。它作为将域名和IP地址相互映射的一个分布式数据库，能够使人更方便地访问互联网。DNS使用TCP和UDP端口53。</p>
+<h4 id="2-现阶段如何提高服务稳定性？"><a href="#2-现阶段如何提高服务稳定性？" class="headerlink" title="(2) 现阶段如何提高服务稳定性？"></a>(2) 现阶段如何提高服务稳定性？</h4><p>当前阶段最简单有效的就是对功能进行拆分。</p>
+<h3 id="4-服务器功能拆分"><a href="#4-服务器功能拆分" class="headerlink" title="4. 服务器功能拆分"></a>4. 服务器功能拆分</h3><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8712.png" alt="12"></p>
+<p>我们继续带着两个问题来学习：</p>
+<ul>
+<li>数据库是什么？</li>
+<li>现阶段如何提高服务的QPS？</li>
+</ul>
+<h4 id="1-数据库是什么？"><a href="#1-数据库是什么？" class="headerlink" title="(1) 数据库是什么？"></a>(1) 数据库是什么？</h4><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8713.png" alt="13"></p>
+<p>数据库，简而言之就是存放数据的地方，用户可以对这些数据执行增删改查等操作。</p>
+<p>常见的数据库类型有关系型数据库(SQL)和非关系型数据库(NoSQL)。</p>
+<p><strong>关系型(SQL)：</strong></p>
+<ul>
+<li>Oracle</li>
+<li>MySQL</li>
+<li>SQL Server</li>
+<li>Access</li>
+<li>PostgreSQL</li>
+<li>OceanBase</li>
+</ul>
+<p><strong>非关系型(NoSQL)：</strong></p>
+<ul>
+<li>键值存储: Redis</li>
+<li>列存储: HBase</li>
+<li>面向文档: MongoDB</li>
+<li>图形: Neo4J</li>
+<li>搜索引擎: Solr</li>
+</ul>
+<h4 id="2-现阶段如何提高服务的QPS？"><a href="#2-现阶段如何提高服务的QPS？" class="headerlink" title="(2) 现阶段如何提高服务的QPS？"></a>(2) 现阶段如何提高服务的QPS？</h4><p>这个时候想要提高服务的QPS就要用到缓存机制了</p>
+<h3 id="5-缓存"><a href="#5-缓存" class="headerlink" title="5. 缓存"></a>5. 缓存</h3><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8714.png" alt="14"></p>
+<p>我们继续带着两个问题来学习：</p>
+<ul>
+<li>常见的缓存方式？</li>
+<li>现阶段如何提高服务的QPS？</li>
+</ul>
+<h4 id="1-常见的缓存方式"><a href="#1-常见的缓存方式" class="headerlink" title="(1) 常见的缓存方式"></a>(1) 常见的缓存方式</h4><h5 id="①-Redis"><a href="#①-Redis" class="headerlink" title="① Redis"></a>① Redis</h5><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8715.png" alt="15"></p>
+<p>Redis（Remote Dictionary Server）是一个使用ANSI C编写的开源、支持网络、基于内存、分布式、可选持久性的键值对存储数据库。一般情况下，MySQL的单机QPS在几千左右，而Redis的单个实例的QPS可以达到10W左右。</p>
+<p>在一些业务场景下合理使用Redis可以大幅提高QPS。</p>
+<p>这里再提下常见的Redis缓存问题：</p>
+<ul>
+<li>缓存穿透(数据库和缓存中的无效查找)</li>
+<li>缓存击穿(高并发请求同一个key刚好失效)</li>
+<li>缓存雪崩(大规模缓存失效)</li>
+</ul>
+<h5 id="②-浏览器缓存"><a href="#②-浏览器缓存" class="headerlink" title="② 浏览器缓存"></a>② 浏览器缓存</h5><p>浏览器也有自己的缓存机制，主要分为强缓存和协商缓存：</p>
+<ul>
+<li><p>强缓存(Expires、Cache-Control)：不到过期时间都直接使用缓存资源。</p>
+</li>
+<li><p>协商缓存(Last-Modified &amp; If-Modified-Since、Etag &amp; If-None-Match)，请求服务器获取资源上次更新时间，如果有更新则重新请求，如果没有更新则直接使用缓存资源。</p>
+</li>
+</ul>
+<h4 id="2-现阶段如何提高服务的QPS？-1"><a href="#2-现阶段如何提高服务的QPS？-1" class="headerlink" title="(2) 现阶段如何提高服务的QPS？"></a>(2) 现阶段如何提高服务的QPS？</h4><p>这个阶段就可以考虑增加负载均衡机制，使用服务器集群。</p>
+<h3 id="6-负载均衡"><a href="#6-负载均衡" class="headerlink" title="6. 负载均衡"></a>6. 负载均衡</h3><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8716.png" alt="16"></p>
+<p>我们继续带着三个问题来学习：</p>
+<ul>
+<li>什么是负载均衡？</li>
+<li>正向代理和反向代理是什么？</li>
+<li>现阶段如何提高服务的QPS？</li>
+</ul>
+<h4 id="1-什么是负载均衡？"><a href="#1-什么是负载均衡？" class="headerlink" title="(1) 什么是负载均衡？"></a>(1) 什么是负载均衡？</h4><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8717.png" alt="17"></p>
+<p>负载平衡（英语：load balancing）是一种电子计算机技术，用来在多个计算机（计算机集群）、网络连接、CPU、磁盘驱动器或其他资源中分配负载，以达到优化资源使用、最大化吞吐率、最小化响应时间、同时避免过载的目的。 </p>
+<p>负载均衡优势：解决高并发，实现高可用，提供扩展性，提高安全性</p>
+<p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8718.png" alt="18"></p>
+<p>常见的负载均衡的算法：</p>
+<ul>
+<li>轮询<ul>
+<li>优点：服务器请求数目相同；</li>
+<li>缺点：服务器压力不一样，不适合服务器配置不同的情况；</li>
+</ul>
+</li>
+<li>随机<ul>
+<li>优点：使用简单；</li>
+<li>缺点：不适合机器配置不同的场景；</li>
+</ul>
+</li>
+<li>最少链接<ul>
+<li>优点：根据服务器当前的请求处理情况，动态分配；</li>
+<li>缺点：算法实现相对复杂，需要监控服务器请求连接数；</li>
+</ul>
+</li>
+<li>源地址散列<ul>
+<li>优点：将来自同一IP地址的请求，同一会话期内，转发到相同的服务器；实现会话粘滞。</li>
+<li>缺点：目标服务器宕机后，会话会丢失；</li>
+</ul>
+</li>
+<li>加权，在轮询，随机，最少链接，Hash’等算法的基础上，通过加权的方式，进行负载服务器分配。<ul>
+<li>优点：根据权重，调节转发服务器的请求数目；</li>
+<li>缺点：使用相对复杂；</li>
+</ul>
+</li>
+</ul>
+<p>常见的负载均衡方案：</p>
+<ul>
+<li>DNS负载均衡</li>
+<li>IP负载均衡</li>
+<li>链路层负载均衡</li>
+<li>混合型负载均衡</li>
+</ul>
+<p>负载均衡的方案，一定要有健康检测和双机热备，一旦负载均衡的服务挂掉，会导致所有服务不可用。</p>
+<h4 id="2-正向代理和反向代理是什么？"><a href="#2-正向代理和反向代理是什么？" class="headerlink" title="(2) 正向代理和反向代理是什么？"></a>(2) 正向代理和反向代理是什么？</h4><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8719.png" alt="19"></p>
+<p>正向代理其实是客户端的代理，帮助客户端访问其无法访问的服务器资源。 </p>
+<p>反向代理则是服务器的代理，帮助服务器做负载均衡，安全防护等，反向代理是负载均衡常见的一种手段。</p>
+<h4 id="3-现阶段如何提高服务的QPS？"><a href="#3-现阶段如何提高服务的QPS？" class="headerlink" title="(3) 现阶段如何提高服务的QPS？"></a>(3) 现阶段如何提高服务的QPS？</h4><p>这个阶段，就可以考虑使用分布式集群来提高服务的QPS。</p>
+<h3 id="7-分布式"><a href="#7-分布式" class="headerlink" title="7. 分布式"></a>7. 分布式</h3><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8720.png" alt="20"></p>
+<p>我们继续带着两个问题来学习：</p>
+<ul>
+<li>什么是分布式？</li>
+<li>现阶段如何提高项目可维护性？</li>
+</ul>
+<h4 id="1-什么是分布式？"><a href="#1-什么是分布式？" class="headerlink" title="(1) 什么是分布式？"></a>(1) 什么是分布式？</h4><p>分布式系统是计算机程序的集合，这些程序利用跨多个独立计算节点的计算资源来实现共同的目标。它也被称为分布式计算或分布式数据库，并依靠不同的节点通过公共网络进行通信和同步。这些节点通常代表独立的物理硬件设备，但也可代表单独的软件进程或其他递归封装的系统。分布式系统旨在消除系统的瓶颈或中心故障点。</p>
+<p>分布式计算系统具有如下特点：</p>
+<ul>
+<li><p>资源共享 — 分布式系统可以共享硬件、软件或数据</p>
+</li>
+<li><p>并行处理 — 多台机器可以同时处理同一功能</p>
+</li>
+<li><p>支持扩展 — 当扩充到其他计算机时，计算和处理能力可以按需进行扩展</p>
+</li>
+<li><p>错误检测 — 可以更轻松地检测故障</p>
+</li>
+<li><p>公开透明 — 节点可以访问系统中的其他节点并与之通信</p>
+</li>
+</ul>
+<p>说到分布式系统就不得不提一下CAP原则。CAP原则又称CAP定理，指的是在一个分布式系统中，一致性（Consistency）、可用性（Availability）、分区容错性（Partition tolerance）。CAP 原则指的是，这三个要素最多只能同时实现两点，不可能三者兼顾。</p>
+<ul>
+<li><p>一致性 (Consistence): 等同于所有节点访问同一份最新的数据副本 (强一致性) </p>
+</li>
+<li><p>可用性 (Availability): 每次请求都能获取到非错的响应，但是不保证获取的数据为最新数据</p>
+</li>
+<li><p>分区容错性 (Partition tolerance): 系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，此时必须在 C 和 A 之间做出取舍</p>
+</li>
+</ul>
+<p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8721.png" alt="21"></p>
+<h4 id="2-现阶段如何提高项目可维护性？"><a href="#2-现阶段如何提高项目可维护性？" class="headerlink" title="(2) 现阶段如何提高项目可维护性？"></a>(2) 现阶段如何提高项目可维护性？</h4><p>上面的更多的是讲技术层面的提升，现阶段想提升项目可维护性，就该进入一个新的阶段——业务拆分</p>
+<h3 id="8-业务拆分"><a href="#8-业务拆分" class="headerlink" title="8. 业务拆分"></a>8. 业务拆分</h3><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8722.png" alt="22"></p>
+<p>业务拆分简单来说就是把业务划分为一个个独立的业务模块，通过远程调用和消息队列等实现不同业务间的通信，通过Docker容器化技术更简单高效的实现业务的划分。</p>
+<p>我们继续带着四个问题来学习：</p>
+<ul>
+<li>远程调用是什么？</li>
+<li>消息队列是什么？</li>
+<li>Docker是什么？</li>
+<li>现阶段如何提高项目可维护性？</li>
+</ul>
+<h4 id="1-远程调用是什么？"><a href="#1-远程调用是什么？" class="headerlink" title="(1) 远程调用是什么？"></a>(1) 远程调用是什么？</h4><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8723.png" alt="23"></p>
+<p>分布式计算中，远程过程调用（英语：Remote Procedure Call，RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一个地址空间（通常为一个开放网络的一台计算机）的子程序，而程序员就像调用本地程序一样，无需额外地为这个交互作用编程（无需关注细节）。RPC是一种服务器-客户端（Client&#x2F;Server）模式，经典实现是一个通过发送请求-接受回应进行信息交互的系统。</p>
+<p>远程过程调用RPC需要解决的问题：</p>
+<ol>
+<li><p>Call ID映射</p>
+</li>
+<li><p>序列化和反序列化</p>
+</li>
+<li><p>网络传输</p>
+</li>
+</ol>
+<p>远程过程调用RPC和Restful Api的区别：RPC VS Restful &#x3D;&gt; 面向过程 VS 面向资源</p>
+<h4 id="2-消息队列是什么？"><a href="#2-消息队列是什么？" class="headerlink" title="(2) 消息队列是什么？"></a>(2) 消息队列是什么？</h4><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8724.png" alt="24"></p>
+<p>在计算机科学中，消息队列（英语：Message queue）是一种进程间通信或同一进程的不同线程间的通信方式，软件的贮列用来处理一系列的输入，通常是来自用户。消息队列提供了异步的通信协议，每一个贮列中的纪录包含详细说明的资料，包含发生的时间，输入设备的种类，以及特定的输入参数，也就是说：消息的发送者和接收者不需要同时与消息队列交互。消息会保存在队列中，直到接收者取回它。</p>
+<p>消息队列的优势：</p>
+<ul>
+<li><p>削峰填谷</p>
+</li>
+<li><p>降低耦合</p>
+</li>
+</ul>
+<p>消息队列的劣势：</p>
+<ul>
+<li>系统可用性降低</li>
+<li>系统复杂度提高</li>
+<li>需要考虑一致性问题</li>
+</ul>
+<p>发布-订阅模式是消息队列中常用的一种模式。</p>
+<h4 id="3-Docker是什么？"><a href="#3-Docker是什么？" class="headerlink" title="(3) Docker是什么？"></a>(3) Docker是什么？</h4><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8725.png" alt="25"></p>
+<p>Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的镜像中，然后发布到任何流行的 Linux或Windows操作系统的机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口。</p>
+<p>Docker的优势：</p>
+<ul>
+<li>多环境切换</li>
+<li>持续集成</li>
+<li>复杂换件一键构建</li>
+<li>项目隔离</li>
+</ul>
+<h4 id="4-现阶段如何提高项目可维护性？"><a href="#4-现阶段如何提高项目可维护性？" class="headerlink" title="(4) 现阶段如何提高项目可维护性？"></a>(4) 现阶段如何提高项目可维护性？</h4><p>身为前端，怎么能忘了前后端分离这件事。</p>
+<h3 id="9-前后端分离"><a href="#9-前后端分离" class="headerlink" title="9. 前后端分离"></a>9. 前后端分离</h3><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8726.png" alt="26"></p>
+<p>前后端分离前端开发就比较熟悉了，静态资源和动态请求分别放在不同的服务器上，可以进一步实现功能上的分离。</p>
+<p>这个时候的问题：</p>
+<ul>
+<li>现阶段如何提高不同地区用户访问速度？</li>
+</ul>
+<h4 id="1-现阶段如何提高不同地区用户访问速度"><a href="#1-现阶段如何提高不同地区用户访问速度" class="headerlink" title="(1) 现阶段如何提高不同地区用户访问速度"></a>(1) 现阶段如何提高不同地区用户访问速度</h4><p>涉及到不通过地区，那就该CDN登场了。</p>
+<h3 id="10-CDN"><a href="#10-CDN" class="headerlink" title="10. CDN"></a>10. CDN</h3><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8727.png" alt="27"></p>
+<p>最后的问题：</p>
+<ul>
+<li>什么是CDN？</li>
+</ul>
+<h4 id="1-什么是CDN？"><a href="#1-什么是CDN？" class="headerlink" title="(1) 什么是CDN？"></a>(1) 什么是CDN？</h4><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8728.png" alt="28"></p>
+<p><strong>CDN</strong>(Content Delivery Network)，内容分发网络。</p>
+<p>简单理解，就类似于京东的仓储物流，对于不同地区的用户就近建立仓库，按照用户的地理位置，就近选择仓库发货。</p>
+<p>CDN的DNS请求的过程：</p>
+<ol>
+<li><p>输入URL</p>
+</li>
+<li><p>本地DNS解析</p>
+</li>
+<li><p>CNAME到CDN专用DNS服务器</p>
+</li>
+<li><p>CDN的全局负载均衡</p>
+</li>
+<li><p>CDN的区域负载均衡</p>
+</li>
+<li><p>最优的缓存服务器节点</p>
+</li>
+<li><p>IP地址返回给用户</p>
+</li>
+</ol>
+<h2 id="三、浏览器渲染"><a href="#三、浏览器渲染" class="headerlink" title="三、浏览器渲染"></a>三、浏览器渲染</h2><p>以一个URL的旅途，说完了现代Web服务架构的演进，最后一环，就是获取资源之后浏览器页面的渲染，这里就贴一张图来展示浏览器的渲染过程，不再赘述。</p>
+<p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%8729.png" alt="29"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%B0%8F%E7%9F%A5%E8%AF%86/" rel="tag"># 小知识</a>
+              <a href="/tags/HTTP/" rel="tag"># HTTP</a>
+              <a href="/tags/HTTPS/" rel="tag"># HTTPS</a>
+              <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/17/Node%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8TypeOrm%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" rel="prev" title="Node后台开发中使用TypeOrm遇到的问题">
+      <i class="fa fa-chevron-left"></i> Node后台开发中使用TypeOrm遇到的问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/11/06/%E4%BD%BF%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2HEXO%E5%8D%9A%E5%AE%A2%E5%B9%B6%E9%85%8D%E7%BD%AEHTTPS/" rel="next" title="使用服务器部署HEXO博客并配置HTTPS">
+      使用服务器部署HEXO博客并配置HTTPS <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">一、前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%8E%B0%E4%BB%A3Web%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E7%9A%84%E6%BC%94%E8%BF%9B"><span class="nav-number">2.</span> <span class="nav-text">二、现代Web服务架构的演进</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9F%BA%E7%A1%80%E7%9A%84%E6%A0%B7%E5%AD%90"><span class="nav-number">2.1.</span> <span class="nav-text">1. 基础的样子</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%B5%8F%E8%A7%88%E5%99%A8%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E9%80%9A%E4%BF%A1%EF%BC%9F"><span class="nav-number">2.1.1.</span> <span class="nav-text">(1) 浏览器和服务器如何进行通信？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%91%A0-TCP%E3%80%81UDP%E5%92%8CHTTP"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">① TCP、UDP和HTTP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%91%A1-HTTP%E7%9A%84%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">② HTTP的简介</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%91%A2-HTTPS%E7%9A%84%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">③ HTTPS的简介</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%91%A3-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.1.1.4.</span> <span class="nav-text">④ 服务器</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%94%A8%E6%88%B7%E7%9A%84%E5%86%85%E7%BD%91IP%E6%80%8E%E4%B9%88%E5%92%8C%E5%85%AC%E7%BD%91IP%E8%BF%9B%E8%A1%8C%E9%80%9A%E4%BF%A1%EF%BC%9F"><span class="nav-number">2.1.2.</span> <span class="nav-text">(2) 用户的内网IP怎么和公网IP进行通信？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-NAT"><span class="nav-number">2.2.</span> <span class="nav-text">2. NAT</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-NAT%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">2.2.1.</span> <span class="nav-text">(1) NAT是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%88%91%E4%BB%AC%E5%B8%B8%E7%94%A8%E7%9A%84%E6%98%AFURL%EF%BC%8C%E6%80%8E%E4%B9%88%E5%92%8CIP%E5%85%B3%E8%81%94%E8%B5%B7%E6%9D%A5%EF%BC%9F"><span class="nav-number">2.2.2.</span> <span class="nav-text">(2) 我们常用的是URL，怎么和IP关联起来？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-DNS"><span class="nav-number">2.3.</span> <span class="nav-text">3. DNS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-DNS%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">2.3.1.</span> <span class="nav-text">(1) DNS是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%8E%B0%E9%98%B6%E6%AE%B5%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E6%9C%8D%E5%8A%A1%E7%A8%B3%E5%AE%9A%E6%80%A7%EF%BC%9F"><span class="nav-number">2.3.2.</span> <span class="nav-text">(2) 现阶段如何提高服务稳定性？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8A%9F%E8%83%BD%E6%8B%86%E5%88%86"><span class="nav-number">2.4.</span> <span class="nav-text">4. 服务器功能拆分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%95%B0%E6%8D%AE%E5%BA%93%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">2.4.1.</span> <span class="nav-text">(1) 数据库是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%8E%B0%E9%98%B6%E6%AE%B5%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E6%9C%8D%E5%8A%A1%E7%9A%84QPS%EF%BC%9F"><span class="nav-number">2.4.2.</span> <span class="nav-text">(2) 现阶段如何提高服务的QPS？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E7%BC%93%E5%AD%98"><span class="nav-number">2.5.</span> <span class="nav-text">5. 缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%B8%B8%E8%A7%81%E7%9A%84%E7%BC%93%E5%AD%98%E6%96%B9%E5%BC%8F"><span class="nav-number">2.5.1.</span> <span class="nav-text">(1) 常见的缓存方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%91%A0-Redis"><span class="nav-number">2.5.1.1.</span> <span class="nav-text">① Redis</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%91%A1-%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98"><span class="nav-number">2.5.1.2.</span> <span class="nav-text">② 浏览器缓存</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%8E%B0%E9%98%B6%E6%AE%B5%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E6%9C%8D%E5%8A%A1%E7%9A%84QPS%EF%BC%9F-1"><span class="nav-number">2.5.2.</span> <span class="nav-text">(2) 现阶段如何提高服务的QPS？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-number">2.6.</span> <span class="nav-text">6. 负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%EF%BC%9F"><span class="nav-number">2.6.1.</span> <span class="nav-text">(1) 什么是负载均衡？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E5%92%8C%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">2.6.2.</span> <span class="nav-text">(2) 正向代理和反向代理是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E7%8E%B0%E9%98%B6%E6%AE%B5%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E6%9C%8D%E5%8A%A1%E7%9A%84QPS%EF%BC%9F"><span class="nav-number">2.6.3.</span> <span class="nav-text">(3) 现阶段如何提高服务的QPS？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">2.7.</span> <span class="nav-text">7. 分布式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%88%86%E5%B8%83%E5%BC%8F%EF%BC%9F"><span class="nav-number">2.7.1.</span> <span class="nav-text">(1) 什么是分布式？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%8E%B0%E9%98%B6%E6%AE%B5%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E9%A1%B9%E7%9B%AE%E5%8F%AF%E7%BB%B4%E6%8A%A4%E6%80%A7%EF%BC%9F"><span class="nav-number">2.7.2.</span> <span class="nav-text">(2) 现阶段如何提高项目可维护性？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E4%B8%9A%E5%8A%A1%E6%8B%86%E5%88%86"><span class="nav-number">2.8.</span> <span class="nav-text">8. 业务拆分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">2.8.1.</span> <span class="nav-text">(1) 远程调用是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">2.8.2.</span> <span class="nav-text">(2) 消息队列是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Docker%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">2.8.3.</span> <span class="nav-text">(3) Docker是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E7%8E%B0%E9%98%B6%E6%AE%B5%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E9%A1%B9%E7%9B%AE%E5%8F%AF%E7%BB%B4%E6%8A%A4%E6%80%A7%EF%BC%9F"><span class="nav-number">2.8.4.</span> <span class="nav-text">(4) 现阶段如何提高项目可维护性？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB"><span class="nav-number">2.9.</span> <span class="nav-text">9. 前后端分离</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%8E%B0%E9%98%B6%E6%AE%B5%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E4%B8%8D%E5%90%8C%E5%9C%B0%E5%8C%BA%E7%94%A8%E6%88%B7%E8%AE%BF%E9%97%AE%E9%80%9F%E5%BA%A6"><span class="nav-number">2.9.1.</span> <span class="nav-text">(1) 现阶段如何提高不同地区用户访问速度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-CDN"><span class="nav-number">2.10.</span> <span class="nav-text">10. CDN</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AFCDN%EF%BC%9F"><span class="nav-number">2.10.1.</span> <span class="nav-text">(1) 什么是CDN？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93"><span class="nav-number">3.</span> <span class="nav-text">三、浏览器渲染</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryan Shang"
+      src="/images/Ryan.jpg">
+  <p class="site-author-name" itemprop="name">Ryan Shang</p>
+  <div class="site-description" itemprop="description">前端渣渣一枚，热爱科技，热爱搞事请</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:Ryan.Shang@outlook.com" title="E-Mail → mailto:Ryan.Shang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryan Shang</span>
+    <span class="post-meta-divider">| </span><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备18027486号 </a>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
