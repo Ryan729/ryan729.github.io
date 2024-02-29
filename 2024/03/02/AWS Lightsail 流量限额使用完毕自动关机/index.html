@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Ryan.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Ryan.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.ryanshang.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、背景Amazon Lightsail轻量服务器，算是在众多大厂服务器中比较划算的一款，3.5美刀一个月就可以获得这样的配置： 1234512 MB Memory2 vCPUs Processing20 GB SSD Storage1 TB Transfer  还可以通过吃码的方式获取更优惠的价格。 但是超出流量限额后，每GB流量0.12美金，加上Lightsail的带宽最高可达4Gpbs，如果">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AWS Lightsail 流量限额使用完毕自动关机">
+<meta property="og:url" content="https://www.ryanshang.com/2024/03/02/AWS%20Lightsail%20%E6%B5%81%E9%87%8F%E9%99%90%E9%A2%9D%E4%BD%BF%E7%94%A8%E5%AE%8C%E6%AF%95%E8%87%AA%E5%8A%A8%E5%85%B3%E6%9C%BA/index.html">
+<meta property="og:site_name" content="Ryan Shang">
+<meta property="og:description" content="一、背景Amazon Lightsail轻量服务器，算是在众多大厂服务器中比较划算的一款，3.5美刀一个月就可以获得这样的配置： 1234512 MB Memory2 vCPUs Processing20 GB SSD Storage1 TB Transfer  还可以通过吃码的方式获取更优惠的价格。 但是超出流量限额后，每GB流量0.12美金，加上Lightsail的带宽最高可达4Gpbs，如果">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-02-29T14:06:00.429Z">
+<meta property="article:author" content="Ryan Shang">
+<meta property="article:tag" content="Lightsail">
+<meta property="article:tag" content="Lamdba">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.ryanshang.com/2024/03/02/AWS%20Lightsail%20%E6%B5%81%E9%87%8F%E9%99%90%E9%A2%9D%E4%BD%BF%E7%94%A8%E5%AE%8C%E6%AF%95%E8%87%AA%E5%8A%A8%E5%85%B3%E6%9C%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>AWS Lightsail 流量限额使用完毕自动关机 | Ryan Shang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ryan Shang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">生死看淡，不服就干</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2024/03/02/AWS%20Lightsail%20%E6%B5%81%E9%87%8F%E9%99%90%E9%A2%9D%E4%BD%BF%E7%94%A8%E5%AE%8C%E6%AF%95%E8%87%AA%E5%8A%A8%E5%85%B3%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AWS Lightsail 流量限额使用完毕自动关机
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-02 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-02T00:00:00+08:00">2024-03-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>Amazon Lightsail轻量服务器，算是在众多大厂服务器中比较划算的一款，3.5美刀一个月就可以获得这样的配置：</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">512 MB Memory</span><br><span class="line">2 vCPUs Processing</span><br><span class="line">20 GB SSD Storage</span><br><span class="line">1 TB Transfer</span><br></pre></td></tr></table></figure>
+
+<p>还可以通过吃码的方式获取更优惠的价格。</p>
+<p>但是超出流量限额后，每GB流量0.12美金，加上Lightsail的带宽最高可达4Gpbs，如果不注意流量超出限额后继续使用就会很容易产生巨额的账单。</p>
+<p>所以，需要找一个方式，超过流量限额后，停止机器的使用，以免产生巨额账单。</p>
+<h3 id="二、大致思路"><a href="#二、大致思路" class="headerlink" title="二、大致思路"></a>二、大致思路</h3><p>利用Amazon的Lambda函数计算（100W次以内免费），配合Amazon提供的官方Lightsail API，设置定时任务，每10分钟获取当前流量限额和已使用流量，进行对比，如果达到限额的95%，则关闭Lightsail实例：</p>
+<ul>
+<li>利用 Lightsail 的 API 接口：<code>get_instance</code>，获取账号下在当前区域里的所有 Lightsail 实例。</li>
+<li>根据 Lightsail 实例的类型，获取每个实例每个月的网络流量配额。</li>
+<li>根据实例的创建时间，计算出每个实例在当前这个计费周期内的流量配额。</li>
+<li>通过 API 接口：<code>get_instance_metric_data</code>，获取每个实例已经使用的入站和出站流量总量。</li>
+<li>如果流量超出当前计费周期的配额的95%，并关闭对应的 Lightsail 实例。</li>
+<li>通过 EventBridge 以 cron job 的方式定时触发 Lambda，运行此检查逻辑。</li>
+</ul>
+<h3 id="三、过程"><a href="#三、过程" class="headerlink" title="三、过程"></a>三、过程</h3><h4 id="1-创建Lambda函数"><a href="#1-创建Lambda函数" class="headerlink" title="1. 创建Lambda函数"></a>1. 创建Lambda函数</h4><p>在AWS控制台进入Lambda函数页面，创建新函数：</p>
+<p>![01](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;01.jpg)</p>
+<p>![02](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;02.jpg)</p>
+<p>Python脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> boto3</span><br><span class="line"><span class="keyword">import</span> calendar</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, date, time,timedelta</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_current_month_first_day_zero_time</span>():</span><br><span class="line">    today = date.today()</span><br><span class="line">    first_day = today.replace(day=<span class="number">1</span>)</span><br><span class="line">    first_day_zero_time = datetime.combine(first_day, time.<span class="built_in">min</span>)</span><br><span class="line">    <span class="keyword">return</span> first_day_zero_time</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_current_month_last_day_last_time</span>():</span><br><span class="line">    today = date.today()</span><br><span class="line">    last_day = today.replace(day=calendar.monthrange(today.year, today.month)[<span class="number">1</span>])</span><br><span class="line">    last_day_last_time = datetime.combine(last_day, time(<span class="number">23</span>, <span class="number">59</span>, <span class="number">59</span>))</span><br><span class="line">    <span class="keyword">return</span> last_day_last_time</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">stop_instance</span>(<span class="params">instance_name</span>):</span><br><span class="line">    client = boto3.client(<span class="string">&#x27;lightsail&#x27;</span>)</span><br><span class="line">    response = client.stop_instance(</span><br><span class="line">        instanceName=instance_name,</span><br><span class="line">        force=<span class="literal">True</span></span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">list_instances</span>(<span class="params">instances_list</span>):</span><br><span class="line">    client = boto3.client(<span class="string">&#x27;lightsail&#x27;</span>)</span><br><span class="line">    paginator = client.get_paginator(<span class="string">&#x27;get_instances&#x27;</span>)</span><br><span class="line">    <span class="comment"># Create a PageIterator from the Paginator</span></span><br><span class="line">    page_iterator = paginator.paginate()</span><br><span class="line">    <span class="keyword">for</span> page <span class="keyword">in</span> page_iterator:</span><br><span class="line">        <span class="keyword">for</span> instance <span class="keyword">in</span> page[<span class="string">&#x27;instances&#x27;</span>]:</span><br><span class="line">            <span class="built_in">print</span>(instance[<span class="string">&#x27;name&#x27;</span>])</span><br><span class="line">            instances_list.append(instance[<span class="string">&#x27;name&#x27;</span>])</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_month_dto_quota</span>(<span class="params">instance_name</span>):</span><br><span class="line">    client = boto3.client(<span class="string">&#x27;lightsail&#x27;</span>)</span><br><span class="line">    response = client.get_instance(</span><br><span class="line">        instanceName=instance_name</span><br><span class="line">    )</span><br><span class="line">    <span class="comment">#print(&quot;response : &#123;&#125;&quot;.format(response))</span></span><br><span class="line">    dto_quota = response[<span class="string">&#x27;instance&#x27;</span>][<span class="string">&#x27;networking&#x27;</span>][<span class="string">&#x27;monthlyTransfer&#x27;</span>][<span class="string">&#x27;gbPerMonthAllocated&#x27;</span>]</span><br><span class="line">    current_datetime = datetime.now()</span><br><span class="line">    instance_created_datetime = response[<span class="string">&#x27;instance&#x27;</span>][<span class="string">&#x27;createdAt&#x27;</span>]</span><br><span class="line">    <span class="keyword">if</span> (instance_created_datetime.year == current_datetime.year) <span class="keyword">and</span> (instance_created_datetime.month == current_datetime.month):</span><br><span class="line">        month_ts = get_current_month_last_day_last_time().timestamp() - get_current_month_first_day_zero_time().timestamp()</span><br><span class="line">        instance_valide_ts = get_current_month_last_day_last_time().timestamp() - instance_created_datetime.timestamp()</span><br><span class="line">        dto_quota = (instance_valide_ts/month_ts) * dto_quota</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;created in current month, quota: &#123;&#125;GB&quot;</span>.<span class="built_in">format</span>(dto_quota))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        dto_quota = response[<span class="string">&#x27;instance&#x27;</span>][<span class="string">&#x27;networking&#x27;</span>][<span class="string">&#x27;monthlyTransfer&#x27;</span>][<span class="string">&#x27;gbPerMonthAllocated&#x27;</span>]</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;created in previous month, full quota: &#123;&#125;GB&quot;</span>.<span class="built_in">format</span>(dto_quota))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> dto_quota</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_instance_data_usage</span>(<span class="params">instance_name, data_type</span>):</span><br><span class="line">    client = boto3.client(<span class="string">&#x27;lightsail&#x27;</span>)</span><br><span class="line">    current_time = datetime.utcnow()</span><br><span class="line">    start_time = get_current_month_first_day_zero_time()</span><br><span class="line">    end_time = get_current_month_last_day_last_time()</span><br><span class="line">    start_time_str = start_time.strftime(<span class="string">&#x27;%Y-%m-%dT%H:%M:%SZ&#x27;</span>)</span><br><span class="line">    end_time_str = end_time.strftime(<span class="string">&#x27;%Y-%m-%dT%H:%M:%SZ&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">    response = client.get_instance_metric_data(</span><br><span class="line">        instanceName=instance_name,</span><br><span class="line">        metricName=data_type,</span><br><span class="line">        period= <span class="number">6</span> * <span class="number">600</span> * <span class="number">24</span>,</span><br><span class="line">        unit=<span class="string">&#x27;Bytes&#x27;</span>,</span><br><span class="line">        statistics=[</span><br><span class="line">            <span class="string">&#x27;Sum&#x27;</span></span><br><span class="line">        ],</span><br><span class="line">        startTime=start_time_str,</span><br><span class="line">        endTime=end_time_str </span><br><span class="line">    )</span><br><span class="line"> </span><br><span class="line">    data_points = response[<span class="string">&#x27;metricData&#x27;</span>]</span><br><span class="line">    total_data_usage = <span class="built_in">sum</span>([data_point[<span class="string">&#x27;sum&#x27;</span>] <span class="keyword">for</span> data_point <span class="keyword">in</span> data_points])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;total &#123;&#125; usage: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(data_type, total_data_usage))</span><br><span class="line">    <span class="keyword">return</span> total_data_usage</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">push_notification</span>(<span class="params">arn, msg</span>):</span><br><span class="line">    sns_client = boto3.client(<span class="string">&#x27;sns&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;sqs arn: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(arn))</span><br><span class="line">    response = sns_client.publish(</span><br><span class="line">        TopicArn=arn,</span><br><span class="line">        Message=msg,</span><br><span class="line">        Subject=<span class="string">&#x27;Lightsail NetworkOut exceeded quota &#x27;</span></span><br><span class="line">    )</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">lambda_handler</span>(<span class="params">event, context</span>):</span><br><span class="line">    instance_name= []</span><br><span class="line">    list_instances(instance_name)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> instance_name:</span><br><span class="line">        quota = get_month_dto_quota(i) * <span class="number">1000</span> * <span class="number">1000</span> * <span class="number">1000</span></span><br><span class="line">        total = get_instance_data_usage(i, <span class="string">&quot;NetworkOut&quot;</span>) + get_instance_data_usage(i, <span class="string">&quot;NetworkIn&quot;</span>) </span><br><span class="line">        msg = <span class="string">f&quot;instance_name: <span class="subst">&#123;i&#125;</span> \nusage: <span class="subst">&#123;total&#125;</span> Byte \nquota: <span class="subst">&#123;quota&#125;</span> Byte \nusage percent: <span class="subst">&#123;(total/quota)*<span class="number">100</span>&#125;</span> %&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(msg)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">int</span>(quota) * <span class="number">0.95</span>) &lt; <span class="built_in">int</span>(total):</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;(quota * 0.95) &lt; total, soforce close instance: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="number">1</span>))</span><br><span class="line">            stop_instance(i)</span><br><span class="line">             </span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&#x27;statusCode&#x27;</span>: <span class="number">200</span>,</span><br><span class="line">        <span class="string">&#x27;body&#x27;</span>: json.dumps(<span class="string">&#x27;total_data_usage from Lambda!&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-修改函数运行配置"><a href="#2-修改函数运行配置" class="headerlink" title="2. 修改函数运行配置"></a>2. 修改函数运行配置</h4><p>在之前创建的Lambda函数页面，进入配置——常规配置——编辑：</p>
+<p>![03](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;03.jpg)</p>
+<p>调大内存和超时时间：</p>
+<p>![04](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;04.jpg)</p>
+<h4 id="3-赋予Lambda权限"><a href="#3-赋予Lambda权限" class="headerlink" title="3. 赋予Lambda权限"></a>3. 赋予Lambda权限</h4><p>在之前创建的Lambda函数页面，进入配置——权限——点击链接跳转至IAM权限管理页面：</p>
+<p>![05](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;05.jpg)</p>
+<p>创建新的策略：</p>
+<p>![06](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;06.jpg)</p>
+<p>选择JSON，粘贴数据，保存</p>
+<p>![07](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;07.jpg)</p>
+<p>JSON数据：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;Version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2012-10-17&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;Statement&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;Action&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;lightsail:GetInstance&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;lightsail:GetInstanceMetricData&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;lightsail:GetInstances&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;lightsail:StopInstance&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Effect&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Allow&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;Resource&quot;</span><span class="punctuation">:</span> <span class="string">&quot;*&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>策略创建完成后关闭IAM权限页面，回到Lambda函数页面，测试是否成功：</p>
+<p>![08](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;08.jpg)</p>
+<h4 id="4-创建定时任务触发Lambda函数"><a href="#4-创建定时任务触发Lambda函数" class="headerlink" title="4. 创建定时任务触发Lambda函数"></a>4. 创建定时任务触发Lambda函数</h4><p>在Lambda函数页面点击添加触发器：</p>
+<p>![09](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;09.jpg)</p>
+<p>选择EventBridge，增加定时任务，保存：</p>
+<p>表达式：<code>cron(0/10 * * * ? *)</code></p>
+<p>![10](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;10.jpg)</p>
+<p>这时就已经基本完成配置了。</p>
+<p>Lambda函数每10分钟执行一次，符合条件就会自动关闭实例。</p>
+<h4 id="5-查看历史执行记录"><a href="#5-查看历史执行记录" class="headerlink" title="5. 查看历史执行记录"></a>5. 查看历史执行记录</h4><p>在Lambda函数页面，选择监控，点击查看CloudWatch Logs跳转至日志页面。</p>
+<p>![11](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;11.jpg)</p>
+<p>选择日志就可以看到日志的详细信息了：</p>
+<p>![12](2024-03-02-AWS Lightsail 流量限额使用完毕自动关机&#x2F;12.jpg)</p>
+<p>这样就可以查看历史的执行结果了。</p>
+<p>后续可以再加入Amazon的订阅通知服务，关机时自动发送邮件给指定邮箱。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Lightsail/" rel="tag"># Lightsail</a>
+              <a href="/tags/Lamdba/" rel="tag"># Lamdba</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/01/28/Docker%E9%95%9C%E5%83%8F%E6%BA%90%E9%97%AE%E9%A2%98%E5%8F%8ADocker%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96/" rel="prev" title="Docker镜像源问题及Docker数据持久化">
+      <i class="fa fa-chevron-left"></i> Docker镜像源问题及Docker数据持久化
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">一、背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%A4%A7%E8%87%B4%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">二、大致思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">三、过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BALambda%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">1. 创建Lambda函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BF%AE%E6%94%B9%E5%87%BD%E6%95%B0%E8%BF%90%E8%A1%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.</span> <span class="nav-text">2. 修改函数运行配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E8%B5%8B%E4%BA%88Lambda%E6%9D%83%E9%99%90"><span class="nav-number">3.3.</span> <span class="nav-text">3. 赋予Lambda权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%88%9B%E5%BB%BA%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E8%A7%A6%E5%8F%91Lambda%E5%87%BD%E6%95%B0"><span class="nav-number">3.4.</span> <span class="nav-text">4. 创建定时任务触发Lambda函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%89%A7%E8%A1%8C%E8%AE%B0%E5%BD%95"><span class="nav-number">3.5.</span> <span class="nav-text">5. 查看历史执行记录</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ryan Shang"
+      src="/images/Ryan.jpg">
+  <p class="site-author-name" itemprop="name">Ryan Shang</p>
+  <div class="site-description" itemprop="description">前端渣渣一枚，热爱科技，热爱搞事请</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:Ryan.Shang@outlook.com" title="E-Mail → mailto:Ryan.Shang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ryan Shang</span>
+    <span class="post-meta-divider">| </span><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备18027486号 </a>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
