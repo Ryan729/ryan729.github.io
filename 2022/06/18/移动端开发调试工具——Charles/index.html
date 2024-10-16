@@ -22,37 +22,37 @@
 
   <meta name="description" content="一、简介 1Charles is an HTTP proxy &#x2F; HTTP monitor &#x2F; Reverse Proxy that enables a developer to view all of the HTTP and SSL &#x2F; HTTPS traffic between their machine and the Internet. This includes requests, r">
 <meta property="og:type" content="article">
-<meta property="og:title" content="移动端开调试——Charles">
-<meta property="og:url" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/index.html">
+<meta property="og:title" content="移动端开发调试工具——Charles">
+<meta property="og:url" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/index.html">
 <meta property="og:site_name" content="Ryan Shang">
 <meta property="og:description" content="一、简介 1Charles is an HTTP proxy &#x2F; HTTP monitor &#x2F; Reverse Proxy that enables a developer to view all of the HTTP and SSL &#x2F; HTTPS traffic between their machine and the Internet. This includes requests, r">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/01.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/02.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/03.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/04.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/05.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/06.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/07.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/08.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/09.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/10.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/11.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/12.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/13.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/14.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/15.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/16.png">
-<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/16.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/01.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/02.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/03.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/04.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/05.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/06.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/07.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/08.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/09.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/10.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/11.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/12.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/13.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/14.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/15.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/16.png">
+<meta property="og:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/16.png">
 <meta property="article:published_time" content="2022-06-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-01-07T11:58:50.342Z">
+<meta property="article:modified_time" content="2024-10-16T07:28:45.578Z">
 <meta property="article:author" content="Ryan Shang">
 <meta property="article:tag" content="开发环境">
 <meta property="article:tag" content="Charles">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/01.png">
+<meta name="twitter:image" content="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/01.png">
 
-<link rel="canonical" href="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/">
+<link rel="canonical" href="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/">
 
 
 <script id="page-configurations">
@@ -65,7 +65,7 @@
   };
 </script>
 
-  <title>移动端开调试——Charles | Ryan Shang</title>
+  <title>移动端开发调试工具——Charles | Ryan Shang</title>
   
 
 
@@ -181,7 +181,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/Ryan.jpg">
@@ -194,7 +194,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          移动端开调试——Charles
+          移动端开发调试工具——Charles
         </h1>
 
         <div class="post-meta">
@@ -212,7 +212,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
                 </span>
             </span>
 
@@ -227,7 +227,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h3><p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/01.png" alt="01"></p>
+        <h3 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h3><p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/01.png" alt="01"></p>
 <figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Charles is an HTTP proxy / HTTP monitor / Reverse Proxy that enables a developer to view all of the HTTP and SSL / HTTPS traffic between their machine and the Internet. This includes requests, responses and the HTTP headers (which contain the cookies and caching information).</span><br></pre></td></tr></table></figure>
 
 <p>Charles是移动端开发时候比较常见的抓包工具：</p>
@@ -247,7 +247,7 @@
 <li>重启Charles</li>
 <li>在应用的工具栏选择Proxy—macOS Proxy即可对Mac进行抓包</li>
 </ol>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/02.png" alt="02"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/02.png" alt="02"></p>
 <h5 id="2-PC"><a href="#2-PC" class="headerlink" title="(2) PC"></a>(2) PC</h5><ol>
 <li>在应用的工具栏选择Help—SSL Proxying—Install Charles Root Certificate</li>
 <li>在弹出的“证书”页面，选择“安装证书”</li>
@@ -257,7 +257,7 @@
 <li>重启Charles</li>
 <li>在应用的工具栏选择Proxy—Windows Proxy即可对Windows进行抓包</li>
 </ol>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/03.png" alt="03"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/03.png" alt="03"></p>
 <h4 id="2-配置Https"><a href="#2-配置Https" class="headerlink" title="2. 配置Https"></a>2. 配置Https</h4><ol>
 <li>在应用的工具栏选择Proxy—SSL Proxying Settings</li>
 <li>勾选“Enable SSL Proxying”</li>
@@ -265,7 +265,7 @@
 <li>Host输入通配符(*)，Port输入443，点击“OK”</li>
 <li>点击“OK”</li>
 </ol>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/04.png" alt="04"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/04.png" alt="04"></p>
 <h3 id="三、iOS-Android配置"><a href="#三、iOS-Android配置" class="headerlink" title="三、iOS&#x2F;Android配置"></a>三、iOS&#x2F;Android配置</h3><h4 id="1-下载手机证书"><a href="#1-下载手机证书" class="headerlink" title="1. 下载手机证书"></a>1. 下载手机证书</h4><h5 id="1-iOS"><a href="#1-iOS" class="headerlink" title="(1) iOS"></a>(1) iOS</h5><ol>
 <li>打开iOS的“设置”—无线局域网—选择和PC&#x2F;Mac同一局域网进行连接</li>
 <li>修改当前局域网配置，在http代理项，“配置代理”—手动—输入PC&#x2F;Mac的IP地址（可在Charles—Help—Local IP Address查看），端口号选择8888（默认值），点击右上角“存储”</li>
@@ -291,33 +291,33 @@
 <li>下载证书文件后，打开Android的“设置”，安全—加密与凭据—安装证书—CA证书—选择刚下载的证书文件（不同厂商、不同版本操作步骤可能会有区别）</li>
 </ol>
 <h6 id="安装CA证书为系统证书，需要ROOT（适用于正式包）："><a href="#安装CA证书为系统证书，需要ROOT（适用于正式包）：" class="headerlink" title="安装CA证书为系统证书，需要ROOT（适用于正式包）："></a>安装CA证书为系统证书，<strong>需要ROOT</strong>（适用于正式包）：</h6><ol>
-<li>把下载的证书转移到PC&#x2F;Mac上，使用openssl x509 -subject_hash_old -in charles-ssl-proxying-certificate.pem计算特征值，比如46f58a05</li>
-<li>把证书文件改名为46f58a05.0</li>
-<li>把证书放到手机的系统分区中&#x2F;system&#x2F;etc&#x2F;security&#x2F;cacerts&#x2F;</li>
+<li>把下载的证书转移到PC&#x2F;Mac上，使用<code>openssl x509 -subject_hash_old -in charles-ssl-proxying-certificate.pem</code>计算特征值，例如46f58a05</li>
+<li>把证书文件改名为<code>46f58a05.0</code></li>
+<li>把证书放到手机的系统分区中<code>/system/etc/security/cacerts/</code></li>
 </ol>
 <h3 id="四、常用功能"><a href="#四、常用功能" class="headerlink" title="四、常用功能"></a>四、常用功能</h3><h4 id="1-Rewrite"><a href="#1-Rewrite" class="headerlink" title="1. Rewrite"></a>1. Rewrite</h4><p><strong>操作：</strong>Charles工具栏—Tools—Rewrite</p>
 <p><strong>适用场景：</strong>对接口的Req&#x2F;Res进行调整；对HTML进行注入</p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/05.png" alt="05"></p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/06.png" alt="06"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/05.png" alt="05"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/06.png" alt="06"></p>
 <h4 id="2-Map-Local"><a href="#2-Map-Local" class="headerlink" title="2. Map Local"></a>2. Map Local</h4><p><strong>操作：</strong>Charles工具栏—Tools—Map Local</p>
 <p><strong>适用场景：</strong>本地开发真机调试，build后替换资源；新项目上线前的模板Mock</p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/07.png" alt="07"></p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/08.png" alt="08"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/07.png" alt="07"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/08.png" alt="08"></p>
 <h4 id="3-Map-Remote"><a href="#3-Map-Remote" class="headerlink" title="3. Map Remote"></a>3. Map Remote</h4><p><strong>操作：</strong>Charles工具栏—Tools—Map Remote</p>
 <p><strong>适用场景：</strong>部分SDK的联调</p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/09.png" alt="09"></p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/10.png" alt="10"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/09.png" alt="09"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/10.png" alt="10"></p>
 <h4 id="4-Breakpoints"><a href="#4-Breakpoints" class="headerlink" title="4. Breakpoints"></a>4. Breakpoints</h4><p><strong>操作：</strong>Charles工具栏—Proxy—Breakponits Settings</p>
 <p><strong>适用场景：</strong>对接口的Req&#x2F;Res进行编辑</p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/11.png" alt="11"></p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/12.png" alt="12"></p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/13.png" alt="13"></p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/14.png" alt="14"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/11.png" alt="11"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/12.png" alt="12"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/13.png" alt="13"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/14.png" alt="14"></p>
 <h3 id="五、推荐实践"><a href="#五、推荐实践" class="headerlink" title="五、推荐实践"></a>五、推荐实践</h3><h4 id="1-每次调试完成后关闭所有工具"><a href="#1-每次调试完成后关闭所有工具" class="headerlink" title="1. 每次调试完成后关闭所有工具"></a>1. 每次调试完成后关闭所有工具</h4><p><strong>操作：</strong>每次使用完成后，关闭Map Remote&#x2F;Map Local&#x2F;Rewrite&#x2F;Breakpoints等功能</p>
 <p><strong>作用：</strong>排除因这些功能造成的异常</p>
 <h4 id="2-设置抓包记录域名白名单"><a href="#2-设置抓包记录域名白名单" class="headerlink" title="2. 设置抓包记录域名白名单"></a>2. 设置抓包记录域名白名单</h4><p><strong>操作：</strong>在Charles—Proxy—Record Settings设置抓包记录域名白名单</p>
 <p><strong>作用：</strong>只记录58相关域名，减少其他请求干扰</p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/15.png" alt="15"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/15.png" alt="15"></p>
 <h4 id="3-SSL证书绕过Apple域名"><a href="#3-SSL证书绕过Apple域名" class="headerlink" title="3. SSL证书绕过Apple域名"></a>3. SSL证书绕过Apple域名</h4><p><strong>操作：</strong>在Charles—Proxy—SSL Proxying Settings设置SSL代理不包括Apple相关域名：</p>
 <ul>
 <li>*.apple.com</li>
@@ -325,10 +325,10 @@
 <li>*.mzstatic.com</li>
 </ul>
 <p><strong>作用：</strong>抓包时候可以正常访问Apple Store以及苹果内购（也可以通过手机的pac分流实现）</p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/16.png" alt="16"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/16.png" alt="16"></p>
 <h4 id="4-使用Rewrite注入vconsole"><a href="#4-使用Rewrite注入vconsole" class="headerlink" title="4. 使用Rewrite注入vconsole"></a>4. 使用Rewrite注入vconsole</h4><p><strong>操作：</strong>在Charles—Tools—Rewrite设置给html请求的Response注入vconsole</p>
 <p><strong>作用：</strong>不需要给项目中增加冗余代码，不需要重新构建，不会影响线上代码</p>
-<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/16.png" alt="16"></p>
+<p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/16.png" alt="16"></p>
 <h4 id="5-利用Map-Local-Rewrite模拟一些case"><a href="#5-利用Map-Local-Rewrite模拟一些case" class="headerlink" title="5. 利用Map Local&#x2F;Rewrite模拟一些case"></a>5. 利用Map Local&#x2F;Rewrite模拟一些case</h4><p><strong>操作：</strong>利用Map Local&#x2F;Rewrite模拟一些case</p>
 <p><strong>作用：</strong>不改变代码逻辑的情况对线上接口进行微调<br>（jsonp使用Rewrite）</p>
 
@@ -431,7 +431,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -444,7 +444,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">41</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

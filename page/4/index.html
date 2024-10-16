@@ -158,7 +158,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2020/01/17/Node%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8TypeOrm%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/Ryan.jpg">
@@ -172,7 +172,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/01/17/Node%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8TypeOrm%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">Node后台开发中使用TypeOrm遇到的问题</a>
+            <a href="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/" class="post-title-link" itemprop="url">一个URL的旅途</a>
         </h2>
 
         <div class="post-meta">
@@ -182,7 +182,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-01-17 00:00:00" itemprop="dateCreated datePublished" datetime="2020-01-17T00:00:00+08:00">2020-01-17</time>
+              <time title="创建时间：2021-06-26 00:00:00" itemprop="dateCreated datePublished" datetime="2021-06-26T00:00:00+08:00">2021-06-26</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -190,7 +190,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
                 </span>
             </span>
 
@@ -205,11 +205,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近项目中使用Node开发，Nest.js作为框架，TypeOrm连接数据库，期间遇到一些坑，这里记录一下。</p>
-<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><h4 id="1-插入数据之后返回的ID集合，ID相同"><a href="#1-插入数据之后返回的ID集合，ID相同" class="headerlink" title="1. 插入数据之后返回的ID集合，ID相同"></a>1. 插入数据之后返回的ID集合，ID相同</h4><p>在TypeOrm插入数据库操作的返回结果中，<code>identifiers</code>字段会是插入数据的id集合，预期情况应该是这样的：</p>
+          <h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%871.png" alt="01"></p>
+<p>为什么要研究这篇内容：</p>
+<ul>
+<li><p>每天都在和浏览器打交道</p>
+</li>
+<li><p>一道面试题</p>
+</li>
+<li><p>开拓视野</p>
+</li>
+</ul>
+<p>通过了解一个url的请求发生了什么来了解现代Web服务架构的演进，这里的每一个环节深挖下去都是一个很大的方向，所里这里仅做一个简介，不会深挖每个环节。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/01/17/Node%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8TypeOrm%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/#more" rel="contents">
+              <a class="btn" href="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -233,7 +242,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2020/01/05/%E4%B8%AA%E4%BA%BA%E7%BB%88%E7%AB%AF%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%EF%BC%88zsh%EF%BC%89/">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2021/05/15/%E4%BD%BF%E7%94%A8FRP%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/Ryan.jpg">
@@ -247,7 +256,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/01/05/%E4%B8%AA%E4%BA%BA%E7%BB%88%E7%AB%AF%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%EF%BC%88zsh%EF%BC%89/" class="post-title-link" itemprop="url">个人终端环境配置（zsh）</a>
+            <a href="/2021/05/15/%E4%BD%BF%E7%94%A8FRP%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" class="post-title-link" itemprop="url">使用FRP实现内网穿透</a>
         </h2>
 
         <div class="post-meta">
@@ -257,7 +266,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-01-05 00:00:00" itemprop="dateCreated datePublished" datetime="2020-01-05T00:00:00+08:00">2020-01-05</time>
+              <time title="创建时间：2021-05-15 00:00:00" itemprop="dateCreated datePublished" datetime="2021-05-15T00:00:00+08:00">2021-05-15</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -280,50 +289,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p> 个人使用的开发Mac，很早就用别人给的教程配置好了Zsh，使用一直很舒服，这次在自己的deepin上配置一次，这里做个简单记录。</p>
-<h3 id="安装清单"><a href="#安装清单" class="headerlink" title="安装清单"></a>安装清单</h3><table>
-<thead>
-<tr>
-<th>名称</th>
-<th>备注</th>
-<th>链接</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>zsh</td>
-<td>shell的一种</td>
-<td><a target="_blank" rel="noopener" href="https://www.zsh.org/">https://www.zsh.org/</a></td>
-</tr>
-<tr>
-<td>oh-my-zsh</td>
-<td>zsh的配置工具</td>
-<td><a target="_blank" rel="noopener" href="https://ohmyz.sh/">https://ohmyz.sh/</a></td>
-</tr>
-<tr>
-<td>zsh-autosuggestions</td>
-<td>命令自动补全插件</td>
-<td><a target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-autosuggestions">https://github.com/zsh-users/zsh-autosuggestions</a></td>
-</tr>
-<tr>
-<td>zsh-syntax-highlighting</td>
-<td>命令高亮插件</td>
-<td><a target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-syntax-highlighting">https://github.com/zsh-users/zsh-syntax-highlighting</a></td>
-</tr>
-<tr>
-<td>Powerline</td>
-<td>个人用主题的字体（不用会乱码）</td>
-<td><a target="_blank" rel="noopener" href="https://github.com/powerline/fonts">https://github.com/powerline/fonts</a></td>
-</tr>
-<tr>
-<td>iTerm2</td>
-<td>Mac下一个推荐的终端</td>
-<td><a target="_blank" rel="noopener" href="http://iterm2.com/">http://iterm2.com/</a></td>
-</tr>
-</tbody></table>
-<h3 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h3><h4 id="1-安装zsh"><a href="#1-安装zsh" class="headerlink" title="1. 安装zsh"></a>1. 安装zsh</h4>
+          <h3 id="一、-背景"><a href="#一、-背景" class="headerlink" title="一、 背景"></a>一、 背景</h3><p>购买了树莓派4B，可以放在家里当作一个小型的服务器使用，因为想在外的时候也可以访问，就可以使用frp这个工具来实现内网穿透。之前也在给手机使用Linux Deploy时使用过，这次刚好记录下配置过程，实现通过公网访问树莓派的一些服务。</p>
+<h3 id="二、简介"><a href="#二、简介" class="headerlink" title="二、简介"></a>二、简介</h3><h4 id="1-frp是什么？"><a href="#1-frp是什么？" class="headerlink" title="1. frp是什么？"></a>1. frp是什么？</h4><p>frp 是一个专注于内网穿透的高性能的反向代理应用，支持 TCP、UDP、HTTP、HTTPS 等多种协议。可以将内网服务以安全、便捷的方式通过具有公网 IP 节点的中转暴露到公网。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/01/05/%E4%B8%AA%E4%BA%BA%E7%BB%88%E7%AB%AF%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%EF%BC%88zsh%EF%BC%89/#more" rel="contents">
+              <a class="btn" href="/2021/05/15/%E4%BD%BF%E7%94%A8FRP%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -347,7 +317,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2019/12/25/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E4%B8%AA%E4%BA%BAgit%E4%BA%8B%E6%95%85/">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2020/12/18/git%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%BAnano/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/Ryan.jpg">
@@ -361,7 +331,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2019/12/25/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E4%B8%AA%E4%BA%BAgit%E4%BA%8B%E6%95%85/" class="post-title-link" itemprop="url">记录一次个人git事故</a>
+            <a href="/2020/12/18/git%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%BAnano/" class="post-title-link" itemprop="url">git修改默认编辑器为nano</a>
         </h2>
 
         <div class="post-meta">
@@ -371,7 +341,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-12-25 00:00:00" itemprop="dateCreated datePublished" datetime="2019-12-25T00:00:00+08:00">2019-12-25</time>
+              <time title="创建时间：2020-12-18 00:00:00" itemprop="dateCreated datePublished" datetime="2020-12-18T00:00:00+08:00">2020-12-18</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -394,14 +364,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>今天圣诞节，在工作时侯，出现了一个有意思的意外情况，这里做下记录。</p>
-<h4 id="事情经过"><a href="#事情经过" class="headerlink" title="事情经过"></a>事情经过</h4><p>一个比较大的需求，每天都保持了一次个人开发分支提交。今天发现有4次提交没有合并到主开发分支，于是动手合并，合并记如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">10262  gco dev</span><br><span class="line">10263  git pull</span><br><span class="line">10264  git <span class="built_in">log</span></span><br><span class="line">10265  gco feature/my-dev-branch</span><br><span class="line">10266  git rebase dev</span><br><span class="line">10267  git rebase -i HEAD~4</span><br><span class="line">10268  git <span class="built_in">log</span></span><br><span class="line">10269  git rebase -i HEAD~1</span><br><span class="line">10270  git <span class="built_in">log</span></span><br><span class="line">10271  git push -f</span><br><span class="line">10272  gco dev</span><br><span class="line">10273  git merge feature/my-dev-branch</span><br><span class="line">10274  git push</span><br><span class="line">10275  git <span class="built_in">log</span></span><br></pre></td></tr></table></figure>
-
-<p>我们部门合并到主开发分支前，要求合并下commit记录，按照以往的流程是没有问题的。</p>
+          <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前在服务器中使用的编辑器是vim，最近开始接触nano，作为我平时低频使用的临时编辑工具，nano上默认会带有一些按键提示，相对于vim对我会有好一些。最近一直想把git的默认编辑器也更换为nano，统一使用nano替代vi&#x2F;vim。</p>
+<h3 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h3><p>直接修改全局的<code>gitconfig</code>文件<code>(~/.gitconfig)</code>，增加如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[core]</span><br><span class="line">	editor = nano</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2019/12/25/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E4%B8%AA%E4%BA%BAgit%E4%BA%8B%E6%95%85/#more" rel="contents">
+              <a class="btn" href="/2020/12/18/git%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%BAnano/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -425,7 +393,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2019/12/22/Linux%E4%BB%BB%E5%8A%A1%E8%84%9A%E6%9C%AC/">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2020/09/19/%E7%A7%BB%E5%8A%A8%E7%AB%AFiOS%E6%94%AF%E4%BB%98%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/Ryan.jpg">
@@ -439,7 +407,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2019/12/22/Linux%E4%BB%BB%E5%8A%A1%E8%84%9A%E6%9C%AC/" class="post-title-link" itemprop="url">Linux任务脚本</a>
+            <a href="/2020/09/19/%E7%A7%BB%E5%8A%A8%E7%AB%AFiOS%E6%94%AF%E4%BB%98%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">移动端iOS支付测试方法</a>
         </h2>
 
         <div class="post-meta">
@@ -449,106 +417,96 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-12-22 00:00:00" itemprop="dateCreated datePublished" datetime="2019-12-22T00:00:00+08:00">2019-12-22</time>
+              <time title="创建时间：2020-09-19 00:00:00" itemprop="dateCreated datePublished" datetime="2020-09-19T00:00:00+08:00">2020-09-19</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这几周在研究安卓手机的Linux Deploy和FRP内网穿透，每次启动关闭重启都要手动执行一些命令，于是想到用shell脚本去控制，稍稍研究了下，写了几个脚本，这里做下记录，以Frpc进程为例，假设Frp编译后的文件夹路径为<code>/home/user/frp</code></p>
-<p>start.sh</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">NAME=frpc</span><br><span class="line">NAME_OUT=<span class="string">&quot;<span class="variable">$&#123;NAME^&#125;</span>&quot;</span></span><br><span class="line">DIR=/home/user/frp</span><br><span class="line">PID=$(ps -e | grep <span class="variable">$NAME</span> | awk &#123;<span class="string">&#x27;print $1&#x27;</span>&#125;)</span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$PID</span> == <span class="string">&quot;&quot;</span> ]]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">nohup</span> <span class="variable">$DIR</span>/<span class="variable">$NAME</span> -c <span class="variable">$DIR</span>/<span class="variable">$NAME</span>.ini &gt; <span class="variable">$DIR</span>/nohup.out 2&gt;&amp;1 &amp;</span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;Start <span class="variable">$NAME_OUT</span> Success&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$NAME_OUT</span> is already running!&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<p>stop.sh</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">NAME=frpc</span><br><span class="line">NAME_OUT=<span class="string">&quot;<span class="variable">$&#123;NAME^&#125;</span>&quot;</span></span><br><span class="line">DIR=/home/user/frp</span><br><span class="line">PID=$(ps -e | grep <span class="variable">$NAME</span> | awk &#123;<span class="string">&#x27;print $1&#x27;</span>&#125;)</span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$PID</span> == <span class="string">&quot;&quot;</span> ]]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$NAME_OUT</span> is not running!&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	sudo <span class="built_in">kill</span> -9 <span class="variable">$PID</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;Stop <span class="variable">$NAME_OUT</span> Success!&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/12/22/Linux%E4%BB%BB%E5%8A%A1%E8%84%9A%E6%9C%AC/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2019/12/15/%E4%B8%AA%E4%BA%BA%E7%94%B5%E8%84%91%E8%AE%BE%E5%A4%87%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E6%95%B4%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Ryan.jpg">
-      <meta itemprop="name" content="Ryan Shang">
-      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ryan Shang">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/15/%E4%B8%AA%E4%BA%BA%E7%94%B5%E8%84%91%E8%AE%BE%E5%A4%87%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E6%95%B4%E7%90%86/" class="post-title-link" itemprop="url">个人电脑设备常用软件整理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-12-15 00:00:00" itemprop="dateCreated datePublished" datetime="2019-12-15T00:00:00+08:00">2019-12-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-                  ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
                 </span>
-                  ，
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>在商业产品的业务中，会有接入iOS支付的需求，但是iOS支付接入，会有这三个点：</p>
+<ol>
+<li>需要配置host访问业务的沙箱环境</li>
+<li>中间需要接口请求访问苹果相关服务</li>
+<li>苹果服务会有SSL Pinning导致这些接口走代理服务会被iOS拦截</li>
+</ol>
+<p>这就导致一个问题，手机配置host需要使用charles走代理，但是苹果相关接口会因此无法访问，陷入僵局</p>
+<h3 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/09/19/%E7%A7%BB%E5%8A%A8%E7%AB%AFiOS%E6%94%AF%E4%BB%98%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2020/04/05/%E5%BD%A9%E8%89%B2%E5%A4%B4%E5%83%8F%E8%BD%AC%E7%81%B0%E8%89%B2%E5%A4%B4%E5%83%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/05/%E5%BD%A9%E8%89%B2%E5%A4%B4%E5%83%8F%E8%BD%AC%E7%81%B0%E8%89%B2%E5%A4%B4%E5%83%8F/" class="post-title-link" itemprop="url">彩色头像转灰色头像</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-05 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-05T00:00:00+08:00">2020-04-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Mac/" itemprop="url" rel="index"><span itemprop="name">Mac</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Windows/" itemprop="url" rel="index"><span itemprop="name">Windows</span></a>
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
                 </span>
             </span>
 
@@ -563,170 +521,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>整理记录下个人常用的各平台的应用软件：</p>
-<h4 id="1-日常工具类"><a href="#1-日常工具类" class="headerlink" title="1. 日常工具类"></a>1. 日常工具类</h4><table>
-<thead>
-<tr>
-<th>名称</th>
-<th>备注</th>
-<th align="left">网址</th>
-<th align="center">Windows</th>
-<th align="center">Mac</th>
-<th align="center">Linux</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Motrix</td>
-<td>下载工具</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://motrix.app/zh-CN/">https://motrix.app/zh-CN/</a></td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-</tr>
-<tr>
-<td>Xmind</td>
-<td>思维导图</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://www.xmind.net/">https://www.xmind.net/</a></td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-</tr>
-<tr>
-<td>draw.io</td>
-<td>流程图工具</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://www.draw.io/">https://www.draw.io/</a></td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-</tr>
-<tr>
-<td>Gas Mask</td>
-<td>host管理工具</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://github.com/2ndalpha/gasmask">https://github.com/2ndalpha/gasmask</a></td>
-<td align="center"></td>
-<td align="center">✔</td>
-<td align="center"></td>
-</tr>
-<tr>
-<td>New File Menu  Free</td>
-<td>新建文件工具</td>
-<td align="left">App Store</td>
-<td align="center"></td>
-<td align="center">✔</td>
-<td align="center"></td>
-</tr>
-<tr>
-<td>Go2Shell</td>
-<td>在访达当前路径打开终端</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://zipzapmac.com/Go2Shell">https://zipzapmac.com/Go2Shell</a></td>
-<td align="center"></td>
-<td align="center">✔</td>
-<td align="center"></td>
-</tr>
-<tr>
-<td>Hyper</td>
-<td>终端</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://hyper.is/">https://hyper.is/</a></td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-</tr>
-<tr>
-<td>oh-my-zsh</td>
-<td>终端配置工具</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://ohmyz.sh/">https://ohmyz.sh/</a></td>
-<td align="center"></td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-</tr>
-<tr>
-<td>Windows Terminal</td>
-<td>终端</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://github.com/microsoft/terminal">https://github.com/microsoft/terminal</a></td>
-<td align="center">✔</td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
-<td>Listary</td>
-<td>快捷启动工具</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://www.listary.com/">https://www.listary.com/</a></td>
-<td align="center">✔</td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
-<td>Alfred</td>
-<td>快捷键效率工具</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://www.alfredapp.com/">https://www.alfredapp.com/</a></td>
-<td align="center"></td>
-<td align="center">✔</td>
-<td align="center"></td>
-</tr>
-<tr>
-<td>Typora</td>
-<td>Markdown编辑器</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://www.typora.io/">https://www.typora.io/</a></td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-</tr>
-</tbody></table>
-<h4 id="2-影音娱乐类"><a href="#2-影音娱乐类" class="headerlink" title="2. 影音娱乐类"></a>2. 影音娱乐类</h4><table>
-<thead>
-<tr>
-<th>名称</th>
-<th>备注</th>
-<th align="left">网址</th>
-<th align="center">Windows</th>
-<th align="center">Mac</th>
-<th align="center">Linux</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>listen1</td>
-<td>吃饭工具0.0</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://listen1.github.io/listen1/">https://listen1.github.io/listen1/</a></td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-</tr>
-<tr>
-<td>HandBrake</td>
-<td>视频转码编辑软件</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://handbrake.fr/">https://handbrake.fr/</a></td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-</tr>
-<tr>
-<td>Potplayer</td>
-<td>视频播放器</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://potplayer.daum.net/">https://potplayer.daum.net/</a></td>
-<td align="center">✔</td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
-<td>IINA</td>
-<td>视频播放器</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://iina.io/">https://iina.io/</a></td>
-<td align="center"></td>
-<td align="center">✔</td>
-<td align="center"></td>
-</tr>
-<tr>
-<td>VLC Media Player</td>
-<td>视频播放器</td>
-<td align="left"><a target="_blank" rel="noopener" href="https://www.videolan.org/vlc/index.zh.html">https://www.videolan.org/vlc/index.zh.html</a></td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-<td align="center">✔</td>
-</tr>
-</tbody></table>
+          <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p><img src="/2020/04/05/%E5%BD%A9%E8%89%B2%E5%A4%B4%E5%83%8F%E8%BD%AC%E7%81%B0%E8%89%B2%E5%A4%B4%E5%83%8F/1.png" alt="01"><br><a target="_blank" rel="noopener" href="https://demo.ryanshang.com/filter/">demo</a></p>
+<p>最近清明节，网上有许多人会把自己的彩色头像换成灰色头像，也有一些工具可以帮忙做图像转换。这两天刚好空闲，想试试用网页来实现把彩色照片转成灰色头像</p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><ul>
+<li><p>使用<code>input</code>的<code>file</code>类型上传图片</p>
+</li>
+<li><p>获取图片后使用<code>FileReader</code>的<code>readAsDataURL</code>Api把文件对象转换为base64格式，展示在输出照片位置</p>
+</li>
+<li><p>输出照片加载完成后，创建一个<code>canvas</code>对象，然后把<code>context</code>的<code>filter</code>属性设置为<code>grayscale(0.95)</code>，使图片变灰</p>
+</li>
+<li><p>把<code>canvas</code>产生出来的新的图片通过<code>canvas.toDataURL</code>Api转换为base64格式</p>
+</li>
+<li><p>用最终的base64格式图片替换输出照片位置的图片</p>
+</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2019/12/15/%E4%B8%AA%E4%BA%BA%E7%94%B5%E8%84%91%E8%AE%BE%E5%A4%87%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E6%95%B4%E7%90%86/#more" rel="contents">
+              <a class="btn" href="/2020/04/05/%E5%BD%A9%E8%89%B2%E5%A4%B4%E5%83%8F%E8%BD%AC%E7%81%B0%E8%89%B2%E5%A4%B4%E5%83%8F/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -749,7 +560,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -817,7 +628,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -830,7 +641,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">41</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

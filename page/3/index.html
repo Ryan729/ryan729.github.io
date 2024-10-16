@@ -158,7 +158,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2023/06/24/%E6%9B%B4%E7%A8%B3%E5%AE%9A%E7%9A%84%E4%BD%BF%E7%94%A8Homebrew/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/Ryan.jpg">
@@ -172,7 +172,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/" class="post-title-link" itemprop="url">移动端开调试——Charles</a>
+            <a href="/2023/06/24/%E6%9B%B4%E7%A8%B3%E5%AE%9A%E7%9A%84%E4%BD%BF%E7%94%A8Homebrew/" class="post-title-link" itemprop="url">更稳定的使用Homebrew</a>
         </h2>
 
         <div class="post-meta">
@@ -182,7 +182,83 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2022-06-18 00:00:00" itemprop="dateCreated datePublished" datetime="2022-06-18T00:00:00+08:00">2022-06-18</time>
+              <time title="创建时间：2023-06-24 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-24T00:00:00+08:00">2023-06-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mac/" itemprop="url" rel="index"><span itemprop="name">Mac</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="Homebrew"><a href="#Homebrew" class="headerlink" title="Homebrew"></a>Homebrew</h3><p>Homebrew一直是Mac上受欢迎的包管理工具之一，日常开发工作中可能会用到他。但是因为Homebrew的仓库使用的是github，使用起来不是很稳定。最近对homebrew进行了重装升级，这里记录下找到的两种可以稳定使用的方法。</p>
+<h4 id="1-终端代理"><a href="#1-终端代理" class="headerlink" title="1. 终端代理"></a>1. 终端代理</h4><p>如果个人有稳定的代理，可以在终端中配置使用代理。<br>这个方案能保证和homebrew的更新内容保持一致，但是有一定使用成本。<br>在.bashrc&#x2F;.zshrc中增加代理配置，参考代码如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># proxy</span></span><br><span class="line">proxy-<span class="function"><span class="title">on</span></span> () &#123;</span><br><span class="line">  <span class="built_in">export</span> http_proxy=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line">  <span class="built_in">export</span> https_proxy=<span class="string">&quot;http://127.0.0.1:7890&quot;</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Proxy On&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">proxy-<span class="function"><span class="title">off</span></span> () &#123;</span><br><span class="line">  <span class="built_in">unset</span> http_proxy</span><br><span class="line">  <span class="built_in">unset</span> https_proxy</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Proxy Off&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/06/24/%E6%9B%B4%E7%A8%B3%E5%AE%9A%E7%9A%84%E4%BD%BF%E7%94%A8Homebrew/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2022/11/19/node-sass%E5%AE%89%E8%A3%85%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/19/node-sass%E5%AE%89%E8%A3%85%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">node-sass安装问题记录</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-19 00:00:00" itemprop="dateCreated datePublished" datetime="2022-11-19T00:00:00+08:00">2022-11-19</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -205,7 +281,164 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h3><p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/01.png" alt="01"></p>
+          <h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>最近新接手了一个老项目，在启动项目阶段遇到了安装node-sass依赖的问题，这里简单记录下解决方案。</p>
+<h3 id="二、执行npm-install-node-sass时发生了什么？"><a href="#二、执行npm-install-node-sass时发生了什么？" class="headerlink" title="二、执行npm install node-sass时发生了什么？"></a>二、执行npm install node-sass时发生了什么？</h3><ol>
+<li>如果本地有缓存命中，则安装本地缓存</li>
+<li>npm 拉下 node-sass包</li>
+<li>根据node版本，从github下载对应的binding.node编译器</li>
+<li>如果下载编译器失败或github没有对应node版本的编译器资源则尝试本地编译</li>
+<li>使用python2进行本地编译</li>
+</ol>
+<h3 id="三、常见问题"><a href="#三、常见问题" class="headerlink" title="三、常见问题"></a>三、常见问题</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/19/node-sass%E5%AE%89%E8%A3%85%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2022/10/23/WSL2%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/23/WSL2%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/" class="post-title-link" itemprop="url">WSL2设置静态IP</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-23 00:00:00" itemprop="dateCreated datePublished" datetime="2022-10-23T00:00:00+08:00">2022-10-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Windows/" itemprop="url" rel="index"><span itemprop="name">Windows</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><h4 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h4><p>微软的WSL(Windows Subsystem for Linux)是近几年我觉得对开发者最友好的功能之一，已经有了WSL1和WSL2两个不同的版本</p>
+<h5 id="WSL1："><a href="#WSL1：" class="headerlink" title="WSL1："></a>WSL1：</h5><p>用模拟Linux内核API的方式实现一个Linux环境<br><strong>优点：</strong>和Windows宿主系统之间之间网络共享更加无缝，包括共享端口，共享文件系统等<br><strong>缺点：</strong>底层内核并不是原生Linux内核，所以在一些更底层的开发上有区别，并且可能无法随着Linux内核更新而更新</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/10/23/WSL2%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Ryan.jpg">
+      <meta itemprop="name" content="Ryan Shang">
+      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ryan Shang">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/" class="post-title-link" itemprop="url">移动端开发调试工具——Charles</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-18 00:00:00" itemprop="dateCreated datePublished" datetime="2022-06-18T00:00:00+08:00">2022-06-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h3><p><img src="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/01.png" alt="01"></p>
 <figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Charles is an HTTP proxy / HTTP monitor / Reverse Proxy that enables a developer to view all of the HTTP and SSL / HTTPS traffic between their machine and the Internet. This includes requests, responses and the HTTP headers (which contain the cookies and caching information).</span><br></pre></td></tr></table></figure>
 
 <p>Charles是移动端开发时候比较常见的抓包工具：</p>
@@ -219,7 +452,7 @@
 </ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E8%B0%83%E8%AF%95%E2%80%94%E2%80%94Charles/#more" rel="contents">
+              <a class="btn" href="/2022/06/18/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Charles/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -314,250 +547,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Ryan.jpg">
-      <meta itemprop="name" content="Ryan Shang">
-      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ryan Shang">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/" class="post-title-link" itemprop="url">一个URL的旅途</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-06-26 00:00:00" itemprop="dateCreated datePublished" datetime="2021-06-26T00:00:00+08:00">2021-06-26</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p><img src="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/%E5%9B%BE%E7%89%871.png" alt="01"></p>
-<p>为什么要研究这篇内容：</p>
-<ul>
-<li><p>每天都在和浏览器打交道</p>
-</li>
-<li><p>一道面试题</p>
-</li>
-<li><p>开拓视野</p>
-</li>
-</ul>
-<p>通过了解一个url的请求发生了什么来了解现代Web服务架构的演进，这里的每一个环节深挖下去都是一个很大的方向，所里这里仅做一个简介，不会深挖每个环节。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/26/%E4%B8%80%E4%B8%AAURL%E7%9A%84%E6%97%85%E9%80%94/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2021/05/15/%E4%BD%BF%E7%94%A8FRP%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Ryan.jpg">
-      <meta itemprop="name" content="Ryan Shang">
-      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ryan Shang">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/05/15/%E4%BD%BF%E7%94%A8FRP%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" class="post-title-link" itemprop="url">使用FRP实现内网穿透.</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-05-15 00:00:00" itemprop="dateCreated datePublished" datetime="2021-05-15T00:00:00+08:00">2021-05-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="一、-背景"><a href="#一、-背景" class="headerlink" title="一、 背景"></a>一、 背景</h3><p>购买了树莓派4B，可以放在家里当作一个小型的服务器使用，因为想在外的时候也可以访问，就可以使用frp这个工具来实现内网穿透。之前也在给手机使用Linux Deploy时使用过，这次刚好记录下配置过程，实现通过公网访问树莓派的一些服务。</p>
-<h3 id="二、简介"><a href="#二、简介" class="headerlink" title="二、简介"></a>二、简介</h3><h4 id="1-frp是什么？"><a href="#1-frp是什么？" class="headerlink" title="1. frp是什么？"></a>1. frp是什么？</h4><p>frp 是一个专注于内网穿透的高性能的反向代理应用，支持 TCP、UDP、HTTP、HTTPS 等多种协议。可以将内网服务以安全、便捷的方式通过具有公网 IP 节点的中转暴露到公网。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/05/15/%E4%BD%BF%E7%94%A8FRP%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2020/09/19/%E7%A7%BB%E5%8A%A8%E7%AB%AFiOS%E6%94%AF%E4%BB%98%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Ryan.jpg">
-      <meta itemprop="name" content="Ryan Shang">
-      <meta itemprop="description" content="前端渣渣一枚，热爱科技，热爱搞事请">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ryan Shang">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/19/%E7%A7%BB%E5%8A%A8%E7%AB%AFiOS%E6%94%AF%E4%BB%98%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">移动端iOS支付测试方法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-09-19 00:00:00" itemprop="dateCreated datePublished" datetime="2020-09-19T00:00:00+08:00">2020-09-19</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>在商业产品的业务中，会有接入iOS支付的需求，但是iOS支付接入，会有这三个点：</p>
-<ol>
-<li>需要配置host访问业务的沙箱环境</li>
-<li>中间需要接口请求访问苹果相关服务</li>
-<li>苹果服务会有SSL Pinning导致这些接口走代理服务会被iOS拦截</li>
-</ol>
-<p>这就导致一个问题，手机配置host需要使用charles走代理，但是苹果相关接口会因此无法访问，陷入僵局</p>
-<h3 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/09/19/%E7%A7%BB%E5%8A%A8%E7%AB%AFiOS%E6%94%AF%E4%BB%98%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -625,7 +618,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -638,7 +631,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">41</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
