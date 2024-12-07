@@ -158,7 +158,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2024/12/17/Nginx%E4%B8%8D%E5%90%8C%E6%9C%8D%E5%8A%A1%E5%88%86%E6%B5%81%E6%96%B9%E5%BC%8F/">
+    <link itemprop="mainEntityOfPage" href="https://www.ryanshang.com/2024/12/07/Nginx%E4%B8%8D%E5%90%8C%E6%9C%8D%E5%8A%A1%E5%88%86%E6%B5%81%E6%96%B9%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/Ryan.jpg">
@@ -172,7 +172,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2024/12/17/Nginx%E4%B8%8D%E5%90%8C%E6%9C%8D%E5%8A%A1%E5%88%86%E6%B5%81%E6%96%B9%E5%BC%8F/" class="post-title-link" itemprop="url">Nginx不同服务分流方式</a>
+            <a href="/2024/12/07/Nginx%E4%B8%8D%E5%90%8C%E6%9C%8D%E5%8A%A1%E5%88%86%E6%B5%81%E6%96%B9%E5%BC%8F/" class="post-title-link" itemprop="url">Nginx不同服务分流方式</a>
         </h2>
 
         <div class="post-meta">
@@ -182,7 +182,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2024-12-17 00:00:00" itemprop="dateCreated datePublished" datetime="2024-12-17T00:00:00+08:00">2024-12-17</time>
+              <time title="创建时间：2024-12-07 00:00:00" itemprop="dateCreated datePublished" datetime="2024-12-07T00:00:00+08:00">2024-12-07</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -209,7 +209,7 @@
 <h3 id="二、方案"><a href="#二、方案" class="headerlink" title="二、方案"></a>二、方案</h3><h4 id="1-使用http模块"><a href="#1-使用http模块" class="headerlink" title="1. 使用http模块"></a>1. 使用http模块</h4><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">443</span> ssl;</span><br><span class="line">        <span class="attribute">listen</span> [::]:<span class="number">443</span> ssl;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">server_name</span> a.example.com;</span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span> http://127.0.0.1:8001;</span><br><span class="line">            <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">            <span class="attribute">proxy_set_header</span> X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">            <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">443</span> ssl;</span><br><span class="line">        <span class="attribute">listen</span> [::]:<span class="number">443</span> ssl;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">server_name</span> b.example.com;</span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span> http://127.0.0.1:8002;</span><br><span class="line">            <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">            <span class="attribute">proxy_set_header</span> X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">            <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2024/12/17/Nginx%E4%B8%8D%E5%90%8C%E6%9C%8D%E5%8A%A1%E5%88%86%E6%B5%81%E6%96%B9%E5%BC%8F/#more" rel="contents">
+              <a class="btn" href="/2024/12/07/Nginx%E4%B8%8D%E5%90%8C%E6%9C%8D%E5%8A%A1%E5%88%86%E6%B5%81%E6%96%B9%E5%BC%8F/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
